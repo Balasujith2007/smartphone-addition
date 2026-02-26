@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction - Digital Wellness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/css/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="18" fill="url(#logo-gradient)"/>
+                    <path d="M20 28 L14 22 C12 20 12 17 14 15 C16 13 18 13 20 15 C22 13 24 13 26 15 C28 17 28 20 26 22 L20 28 Z" fill="#fff"/>
+                    <defs>
+                        <linearGradient id="logo-gradient">
+                            <stop offset="0%" stop-color="#0d9488"/>
+                            <stop offset="100%" stop-color="#14b8a6"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>Digital Wellness</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="prediction.html" class="nav-item active">
+                    <span class="icon">🎯</span>
+                    <span>Prediction</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">📈</span>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <span class="icon">⚙️</span>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="index.html" class="nav-item">
+                    <span class="icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <header class="top-navbar">
+                <h1>Addiction Risk Prediction</h1>
+                <div class="navbar-right">
+                    <button class="icon-btn notification-btn">
+                        🔔
+                        <span class="badge">3</span>
+                    </button>
+                    <div class="profile-menu">
+                        <img src="https://ui-avatars.com/api/?name=User&background=667eea&color=fff" alt="Profile">
+                        <span>User</span>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="prediction-container">
+                <div class="prediction-form-card glass-card">
+                    <div class="form-header">
+                        <h2>📱 Smartphone Usage Assessment</h2>
+                        <p class="form-description">Complete this quick assessment to understand your digital wellness. All fields are required for accurate prediction.</p>
+                    </div>
+                    
+                    <form id="predictionForm" class="prediction-form">
+                        <div class="form-section">
+                            <h3 class="section-title">⏰ Time-Based Metrics</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="screenTime">
+                                        <span class="label-text">Daily Screen Time</span>
+                                        <span class="label-badge">Required</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="screenTime" min="0" max="24" step="0.5" placeholder="5.5" required>
+                                        <span class="input-unit">hours</span>
+                                    </div>
+                                    <span class="input-hint">💡 Average hours spent on phone daily</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="nightUsage">
+                                        <span class="label-text">Night Usage (10 PM - 6 AM)</span>
+                                        <span class="label-badge">Required</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="nightUsage" min="0" max="12" step="0.5" placeholder="1.5" required>
+                                        <span class="input-unit">hours</span>
+                                    </div>
+                                    <span class="input-hint">💡 Phone usage during sleep hours</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3 class="section-title">📊 Behavior Patterns</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="unlockFreq">
+                                        <span class="label-text">Daily Unlock Count</span>
+                                        <span class="label-badge">Required</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="unlockFreq" min="0" max="500" placeholder="120" required>
+                                        <span class="input-unit">times</span>
+                                    </div>
+                                    <span class="input-hint">💡 How many times you unlock your phone</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="avgSession">
+                                        <span class="label-text">Average Session Length</span>
+                                        <span class="label-badge">Required</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="avgSession" min="0" max="180" placeholder="25" required>
+                                        <span class="input-unit">minutes</span>
+                                    </div>
+                                    <span class="input-hint">💡 Typical duration per usage session</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3 class="section-title">🎮 App Categories</h3>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="socialMedia">
+                                        <span class="label-text">Social Media Time</span>
+                                        <span class="label-badge">Required</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="socialMedia" min="0" max="24" step="0.5" placeholder="3.0" required>
+                                        <span class="input-unit">hours</span>
+                                    </div>
+                                    <span class="input-hint">💡 Instagram, Facebook, Twitter, TikTok, etc.</span>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="gaming">
+                                        <span class="label-text">Gaming Time</span>
+                                        <span class="label-badge">Required</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <input type="number" id="gaming" min="0" max="24" step="0.5" placeholder="1.5" required>
+                                        <span class="input-unit">hours</span>
+                                    </div>
+                                    <span class="input-hint">💡 Mobile games and gaming apps</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="document.getElementById('predictionForm').reset()">
+                                <span>🔄 Reset Form</span>
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-text">🎯 Analyze My Usage</span>
+                                <span class="btn-loader" style="display: none;">⏳ Processing...</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="info-sidebar">
+                    <div class="info-card glass-card">
+                        <h3>💡 Quick Tips</h3>
+                        <div class="tips-grid">
+                            <div class="tip-item">
+                                <span class="tip-icon">📱</span>
+                                <p>Check your phone's screen time settings for accurate data</p>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">📊</span>
+                                <p>Be honest for the most accurate assessment</p>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🎯</span>
+                                <p>Results are instant and completely private</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card glass-card">
+                        <h3>📋 How It Works</h3>
+                        <div class="info-content">
+                            <div class="info-item">
+                                <span class="info-number">1</span>
+                                <div>
+                                    <h4>Input Data</h4>
+                                    <p>Enter your usage patterns</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-number">2</span>
+                                <div>
+                                    <h4>ML Analysis</h4>
+                                    <p>AI analyzes your behavior</p>
+                                </div>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-number">3</span>
+                                <div>
+                                    <h4>Get Results</h4>
+                                    <p>Personalized recommendations</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="privacy-note glass-card">
+                        <div class="privacy-icon">🔒</div>
+                        <h4>Your Privacy Matters</h4>
+                        <p>All data is processed locally in your browser. Nothing is stored or shared with third parties.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="src/js/prediction.js"></script>
+</body>
+</html>
