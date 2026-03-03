@@ -24,6 +24,9 @@ document.getElementById('predictionForm').addEventListener('submit', function(e)
     btnLoader.style.display = 'inline';
     submitBtn.disabled = true;
     
+    // Show notification toast
+    showToast('Analyzing your usage patterns...', 'info');
+    
     // Simulate ML prediction with realistic algorithm
     setTimeout(() => {
         const results = calculateAddictionRisk(
@@ -38,8 +41,16 @@ document.getElementById('predictionForm').addEventListener('submit', function(e)
         // Store results in sessionStorage
         sessionStorage.setItem('predictionResults', JSON.stringify(results));
         
-        // Redirect to results page
-        window.location.href = 'result.html';
+        // Send notification to user's email and mobile
+        sendNotificationToUser(results);
+        
+        // Show success notification
+        showToast('📧 Results sent to your email and mobile!', 'success');
+        
+        // Redirect to results page after a short delay
+        setTimeout(() => {
+            window.location.href = 'result.html';
+        }, 1500);
     }, 2000);
 });
 
@@ -221,3 +232,198 @@ document.querySelectorAll('#predictionForm input').forEach(input => {
         }
     });
 });
+
+// Send notification to user's email and mobile
+function sendNotificationToUser(results) {
+    // Get user data
+    const userData = UserData.get();
+    const userEmail = userData.email;
+    const userPhone = userData.phone;
+    const userName = `${userData.firstName} ${userData.lastName}`;
+    
+    // Prepare notification message
+    const message = formatNotificationMessage(results, userName);
+    
+    // In production, this would call a backend API
+    // For now, we'll simulate the notification and show confirmation
+    
+    // Simulate API call to send email
+    sendEmailNotification(userEmail, message, results);
+    
+    // Simulate API call to send SMS
+    sendSMSNotification(userPhone, message, results);
+    
+    // Log notification for demo purposes
+    console.log('📧 Email Notification Sent to:', userEmail);
+    console.log('📱 SMS Notification Sent to:', userPhone);
+    console.log('Message:', message);
+    
+    // Store notification in localStorage for history
+    saveNotificationHistory(results, userEmail, userPhone);
+}
+
+// Format notification message
+function formatNotificationMessage(results, userName) {
+    const riskEmoji = results.riskColor === 'high' ? '🔴' : results.riskColor === 'medium' ? '🟡' : '🟢';
+    
+    return `
+${riskEmoji} Smartphone Addiction Risk Assessment
+
+Hello ${userName},
+
+Your addiction risk analysis is complete:
+
+📊 Risk Level: ${results.riskLevel}
+🎯 Risk Score: ${results.riskScore}/100
+✅ Confidence: ${results.confidence}%
+
+📱 Usage Summary:
+• Screen Time: ${results.screenTime} hours/day
+• Unlocks: ${results.unlockFreq} times/day
+• Social Media: ${results.socialMedia} hours/day
+• Gaming: ${results.gaming} hours/day
+• Night Usage: ${results.nightUsage} hours
+
+${results.riskColor === 'high' ? '⚠️ URGENT: Your usage patterns indicate high addiction risk. Please review your detailed report and follow the recommendations.' : results.riskColor === 'medium' ? '⚡ ATTENTION: Your usage shows moderate risk. Consider implementing the suggested changes.' : '✨ GOOD NEWS: Your usage is within healthy limits. Keep up the good habits!'}
+
+View your detailed report and personalized recommendations in the app.
+
+Best regards,
+Digital Wellness Team
+    `.trim();
+}
+
+// Simulate sending email notification
+function sendEmailNotification(email, message, results) {
+    // In production, this would call your backend API endpoint
+    // Example: fetch('/api/send-email', { method: 'POST', body: JSON.stringify({ email, message, results }) })
+    
+    const emailData = {
+        to: email,
+        subject: `${results.riskLevel} - Your Smartphone Addiction Assessment`,
+        body: message,
+        html: formatEmailHTML(results),
+        timestamp: new Date().toISOString()
+    };
+    
+    // Store in localStorage to simulate sent emails
+    const sentEmails = JSON.parse(localStorage.getItem('sentEmails') || '[]');
+    sentEmails.push(emailData);
+    localStorage.setItem('sentEmails', JSON.stringify(sentEmails));
+    
+    return emailData;
+}
+
+// Simulate sending SMS notification
+function sendSMSNotification(phone, message, results) {
+    // In production, this would call your backend API endpoint with SMS service (Twilio, etc.)
+    // Example: fetch('/api/send-sms', { method: 'POST', body: JSON.stringify({ phone, message }) })
+    
+    const smsMessage = `
+${results.riskLevel === 'High Risk' ? '🔴' : results.riskLevel === 'Medium Risk' ? '🟡' : '🟢'} Digital Wellness Alert
+
+Risk Level: ${results.riskLevel}
+Score: ${results.riskScore}/100
+
+Screen Time: ${results.screenTime}h/day
+Unlocks: ${results.unlockFreq}/day
+
+Check your email for detailed report and recommendations.
+    `.trim();
+    
+    const smsData = {
+        to: phone,
+        message: smsMessage,
+        timestamp: new Date().toISOString()
+    };
+    
+    // Store in localStorage to simulate sent SMS
+    const sentSMS = JSON.parse(localStorage.getItem('sentSMS') || '[]');
+    sentSMS.push(smsData);
+    localStorage.setItem('sentSMS', JSON.stringify(sentSMS));
+    
+    return smsData;
+}
+
+// Format email HTML
+function formatEmailHTML(results) {
+    const riskColor = results.riskColor === 'high' ? '#ef4444' : results.riskColor === 'medium' ? '#f59e0b' : '#10b981';
+    
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #1f2937 0%, #374151 100%); color: white; padding: 30px; text-align: center; border-radius: 12px 12px 0 0; }
+        .content { background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px; }
+        .risk-badge { display: inline-block; padding: 10px 20px; background: ${riskColor}; color: white; border-radius: 20px; font-weight: bold; margin: 20px 0; }
+        .metric { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid ${riskColor}; }
+        .footer { text-align: center; margin-top: 30px; color: #6b7280; font-size: 14px; }
+        .btn { display: inline-block; padding: 12px 30px; background: ${riskColor}; color: white; text-decoration: none; border-radius: 8px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📱 Digital Wellness Report</h1>
+            <p>Your Smartphone Addiction Risk Assessment</p>
+        </div>
+        <div class="content">
+            <div class="risk-badge">${results.riskLevel}</div>
+            <h2>Assessment Results</h2>
+            <div class="metric">
+                <strong>Risk Score:</strong> ${results.riskScore}/100 (${results.confidence}% confidence)
+            </div>
+            <div class="metric">
+                <strong>Screen Time:</strong> ${results.screenTime} hours/day
+            </div>
+            <div class="metric">
+                <strong>Daily Unlocks:</strong> ${results.unlockFreq} times
+            </div>
+            <div class="metric">
+                <strong>Social Media:</strong> ${results.socialMedia} hours/day
+            </div>
+            <div class="metric">
+                <strong>Gaming:</strong> ${results.gaming} hours/day
+            </div>
+            <div class="metric">
+                <strong>Night Usage:</strong> ${results.nightUsage} hours
+            </div>
+            <h3>Key Recommendations:</h3>
+            <ul>
+                ${results.factors.slice(0, 3).map(f => `<li>${f.recommendation}</li>`).join('')}
+            </ul>
+            <a href="http://localhost:3000/result.html" class="btn">View Detailed Report</a>
+        </div>
+        <div class="footer">
+            <p>This is an automated message from Digital Wellness Dashboard</p>
+            <p>© 2024 Digital Wellness. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+</html>
+    `;
+}
+
+// Save notification history
+function saveNotificationHistory(results, email, phone) {
+    const history = JSON.parse(localStorage.getItem('notificationHistory') || '[]');
+    
+    history.push({
+        timestamp: new Date().toISOString(),
+        riskLevel: results.riskLevel,
+        riskScore: results.riskScore,
+        email: email,
+        phone: phone,
+        sent: true
+    });
+    
+    // Keep only last 50 notifications
+    if (history.length > 50) {
+        history.shift();
+    }
+    
+    localStorage.setItem('notificationHistory', JSON.stringify(history));
+}

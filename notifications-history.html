@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notification History - Digital Wellness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="src/css/styles.css">
+    <script src="src/js/auth.js"></script>
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="18" fill="url(#logo-gradient)" />
+                    <path
+                        d="M20 28 L14 22 C12 20 12 17 14 15 C16 13 18 13 20 15 C22 13 24 13 26 15 C28 17 28 20 26 22 L20 28 Z"
+                        fill="#fff" />
+                    <defs>
+                        <linearGradient id="logo-gradient">
+                            <stop offset="0%" stop-color="#6366f1" />
+                            <stop offset="100%" stop-color="#8b5cf6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>Digital Wellness</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item"><span class="icon">📊</span><span>Dashboard</span></a>
+                <a href="prediction.html" class="nav-item"><span class="icon">🎯</span><span>Prediction</span></a>
+                <a href="analytics.html" class="nav-item"><span class="icon">📈</span><span>Analytics</span></a>
+                <a href="profile.html" class="nav-item"><span class="icon">👤</span><span>Profile</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <a href="#" class="nav-item" onclick="Auth.logout(); return false;"><span
+                        class="icon">🚪</span><span>Logout</span></a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-navbar">
+                <h1>📬 Sent Notifications</h1>
+                <div class="navbar-right">
+                    <div class="profile-menu" onclick="window.location.href='profile.html'" style="cursor:pointer;">
+                        <img id="navAvatar"
+                            src="https://ui-avatars.com/api/?name=JD&size=32&background=6366f1&color=fff&bold=true"
+                            alt="Profile">
+                        <span id="navName">John Doe</span>
+                    </div>
+                </div>
+            </header>
+
+            <div style="max-width:900px; margin:0 auto; display:flex; flex-direction:column; gap:24px;">
+
+                <!-- Summary Stats -->
+                <div class="glass-card" id="summaryStats" style="display:none;">
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:20px;">
+                        <h3 style="font-size:18px; font-weight:700;">📊 Notification Summary</h3>
+                        <button id="clearHistoryBtn"
+                            style="padding:8px 18px; border-radius:10px; background:rgba(239,68,68,0.12); color:#ef4444; border:1px solid rgba(239,68,68,0.3); cursor:pointer; font-size:13px; font-weight:600; transition:all 0.2s; font-family:inherit;">🗑️
+                            Clear History</button>
+                    </div>
+                    <div style="display:flex; gap:16px; flex-wrap:wrap;" id="statsRow"></div>
+                </div>
+
+                <!-- Recipient Info -->
+                <div class="glass-card" id="recipientBanner" style="display:none;">
+                    <h3 style="font-size:16px; font-weight:600; margin-bottom:16px;">📋 Notifications Sent To</h3>
+                    <div style="display:flex; gap:24px; flex-wrap:wrap; margin-bottom:16px;">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div
+                                style="width:40px;height:40px;background:rgba(99,102,241,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">
+                                📧</div>
+                            <div>
+                                <p style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Email Address
+                                </p>
+                                <p style="font-size:15px;font-weight:600;" id="recipientEmail">—</p>
+                            </div>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div
+                                style="width:40px;height:40px;background:rgba(20,184,166,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">
+                                📱</div>
+                            <div>
+                                <p style="font-size:12px;color:var(--text-secondary);margin-bottom:2px;">Mobile Number
+                                </p>
+                                <p style="font-size:15px;font-weight:600;" id="recipientPhone">—</p>
+                            </div>
+                        </div>
+                    </div>
+                    <p
+                        style="font-size:12px;color:var(--text-secondary);padding:10px 14px;background:rgba(99,102,241,0.07);border-radius:8px;border-left:3px solid #6366f1;">
+                        💡 To update contact details, go to <a href="profile.html"
+                            style="color:#6366f1;font-weight:600;">Profile → Edit Profile</a>.
+                    </p>
+                </div>
+
+                <!-- Timeline -->
+                <div id="notificationTimeline"></div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="glass-card" style="text-align:center;padding:60px 32px;display:none;">
+                    <div style="font-size:64px;margin-bottom:20px;opacity:0.4;">📭</div>
+                    <h3 style="font-size:22px;font-weight:700;margin-bottom:10px;">No notifications sent yet</h3>
+                    <p style="color:var(--text-secondary);margin-bottom:28px;">Complete a prediction to receive your
+                        risk assessment via email and SMS.</p>
+                    <button onclick="window.location.href='prediction.html'"
+                        style="padding:12px 28px;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;border:none;border-radius:12px;font-weight:600;cursor:pointer;font-family:inherit;font-size:15px;">🎯
+                        Run Prediction</button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="src/js/common.js"></script>
+    <script>
+        function getRiskColor(l) { return l === 'High Risk' ? '#ef4444' : l === 'Medium Risk' ? '#f59e0b' : '#10b981'; }
+        function getRiskBg(l) { return l === 'High Risk' ? 'rgba(239,68,68,0.12)' : l === 'Medium Risk' ? 'rgba(245,158,11,0.12)' : 'rgba(16,185,129,0.12)'; }
+        function getRiskEmoji(l) { return l === 'High Risk' ? '🔴' : l === 'Medium Risk' ? '🟡' : '🟢'; }
+        function fmtDate(ts) { return new Date(ts).toLocaleString('en-IN', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }); }
+
+        function renderCard(item, i) {
+            const c = getRiskColor(item.riskLevel), bg = getRiskBg(item.riskLevel), em = getRiskEmoji(item.riskLevel);
+            return `<div class="glass-card" style="margin-bottom:16px;border-left:4px solid ${c};">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+                            <span style="font-size:22px;">${em}</span>
+                            <span style="font-size:13px;font-weight:700;padding:4px 12px;background:${bg};color:${c};border-radius:8px;">${item.riskLevel}</span>
+                            <span style="font-size:13px;color:var(--text-secondary);">Score: <strong style="color:var(--text-primary);">${item.riskScore}/100</strong></span>
+                        </div>
+                        <p style="font-size:13px;color:var(--text-secondary);">🕒 ${fmtDate(item.timestamp)}</p>
+                    </div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <span style="padding:6px 14px;border-radius:8px;background:rgba(99,102,241,0.1);font-size:13px;color:#6366f1;font-weight:600;">📧 ${item.email}</span>
+                        <span style="padding:6px 14px;border-radius:8px;background:rgba(20,184,166,0.1);font-size:13px;color:#14b8a6;font-weight:600;">📱 ${item.phone}</span>
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;margin-top:16px;padding-top:16px;border-top:1px solid var(--border-color);">
+                    <button onclick="previewEmail(${i})" style="padding:8px 16px;background:rgba(99,102,241,0.1);color:#6366f1;border:1px solid rgba(99,102,241,0.3);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all 0.2s;"
+                        onmouseover="this.style.background='rgba(99,102,241,0.2)'" onmouseout="this.style.background='rgba(99,102,241,0.1)'">📧 Preview Email</button>
+                    <button onclick="previewSMS(${i})" style="padding:8px 16px;background:rgba(20,184,166,0.1);color:#14b8a6;border:1px solid rgba(20,184,166,0.3);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:all 0.2s;"
+                        onmouseover="this.style.background='rgba(20,184,166,0.2)'" onmouseout="this.style.background='rgba(20,184,166,0.1)'">📱 Preview SMS</button>
+                </div>
+            </div>`;
+        }
+
+        function showPreviewModal(html) {
+            document.getElementById('previewModal')?.remove();
+            const o = document.createElement('div');
+            o.id = 'previewModal';
+            o.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;backdrop-filter:blur(4px);';
+            o.innerHTML = html;
+            o.addEventListener('click', e => { if (e.target === o) o.remove(); });
+            document.body.appendChild(o);
+        }
+
+        function previewEmail(i) {
+            const emails = JSON.parse(localStorage.getItem('sentEmails') || '[]');
+            const e = emails[emails.length - 1 - i];
+            if (!e) { showToast('Email preview not available', 'error'); return; }
+            showPreviewModal(`<div style="background:var(--bg-secondary,#1a1a1a);border:1px solid var(--border-color,#2a2a2a);border-radius:20px;max-width:600px;width:100%;max-height:80vh;overflow:hidden;display:flex;flex-direction:column;">
+                <div style="padding:20px 24px;border-bottom:1px solid var(--border-color,#2a2a2a);display:flex;justify-content:space-between;align-items:center;">
+                    <div><h3 style="font-size:16px;font-weight:700;margin-bottom:4px;">📧 Email Preview</h3><p style="font-size:12px;color:var(--text-secondary);">To: ${e.to} &nbsp;·&nbsp; ${e.subject}</p></div>
+                    <button onclick="document.getElementById('previewModal').remove()" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:24px;line-height:1;padding:4px;">×</button>
+                </div>
+                <div style="padding:20px 24px;overflow-y:auto;flex:1;">
+                    <pre style="font-family:inherit;font-size:14px;line-height:1.7;color:var(--text-primary,#f5f5f5);white-space:pre-wrap;">${e.body || 'No preview'}</pre>
+                </div>
+            </div>`);
+        }
+
+        function previewSMS(i) {
+            const smsList = JSON.parse(localStorage.getItem('sentSMS') || '[]');
+            const s = smsList[smsList.length - 1 - i];
+            if (!s) { showToast('SMS preview not available', 'error'); return; }
+            showPreviewModal(`<div style="background:var(--bg-secondary,#1a1a1a);border:1px solid var(--border-color,#2a2a2a);border-radius:20px;max-width:420px;width:100%;overflow:hidden;">
+                <div style="padding:20px 24px;border-bottom:1px solid var(--border-color,#2a2a2a);display:flex;justify-content:space-between;align-items:center;">
+                    <div><h3 style="font-size:16px;font-weight:700;margin-bottom:4px;">📱 SMS Preview</h3><p style="font-size:12px;color:var(--text-secondary);">To: ${s.to}</p></div>
+                    <button onclick="document.getElementById('previewModal').remove()" style="background:none;border:none;cursor:pointer;color:var(--text-secondary);font-size:24px;line-height:1;padding:4px;">×</button>
+                </div>
+                <div style="padding:20px 24px;">
+                    <div style="background:var(--bg-tertiary,#262626);border-radius:16px 16px 4px 16px;padding:16px 20px;max-width:88%;margin-left:auto;">
+                        <pre style="font-family:inherit;font-size:14px;line-height:1.6;color:var(--text-primary,#f5f5f5);white-space:pre-wrap;margin:0;">${s.message}</pre>
+                        <p style="font-size:11px;color:var(--text-secondary);margin-top:8px;text-align:right;">${new Date(s.timestamp).toLocaleTimeString()}</p>
+                    </div>
+                </div>
+            </div>`);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const history = JSON.parse(localStorage.getItem('notificationHistory') || '[]');
+            const user = UserData.get();
+
+            document.getElementById('navName').textContent = `${user.firstName} ${user.lastName}`;
+            if (user.avatar) document.getElementById('navAvatar').src = user.avatar;
+
+            if (history.length === 0) {
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+
+            // Recipient banner
+            document.getElementById('recipientBanner').style.display = 'block';
+            document.getElementById('recipientEmail').textContent = user.email;
+            document.getElementById('recipientPhone').textContent = user.phone;
+
+            // Stats
+            const high = history.filter(h => h.riskLevel === 'High Risk').length;
+            const med = history.filter(h => h.riskLevel === 'Medium Risk').length;
+            const low = history.filter(h => h.riskLevel === 'Low Risk').length;
+            document.getElementById('summaryStats').style.display = 'block';
+            document.getElementById('statsRow').innerHTML = `
+                <div style="padding:12px 20px;background:rgba(99,102,241,0.1);border-radius:12px;text-align:center;flex:1;min-width:90px;"><p style="font-size:24px;font-weight:700;">${history.length}</p><p style="font-size:12px;color:var(--text-secondary);">Total Sent</p></div>
+                <div style="padding:12px 20px;background:rgba(239,68,68,0.1);border-radius:12px;text-align:center;flex:1;min-width:90px;"><p style="font-size:24px;font-weight:700;color:#ef4444;">${high}</p><p style="font-size:12px;color:var(--text-secondary);">High Risk</p></div>
+                <div style="padding:12px 20px;background:rgba(245,158,11,0.1);border-radius:12px;text-align:center;flex:1;min-width:90px;"><p style="font-size:24px;font-weight:700;color:#f59e0b;">${med}</p><p style="font-size:12px;color:var(--text-secondary);">Medium Risk</p></div>
+                <div style="padding:12px 20px;background:rgba(16,185,129,0.1);border-radius:12px;text-align:center;flex:1;min-width:90px;"><p style="font-size:24px;font-weight:700;color:#10b981;">${low}</p><p style="font-size:12px;color:var(--text-secondary);">Low Risk</p></div>
+            `;
+
+            // Render cards (newest first)
+            document.getElementById('notificationTimeline').innerHTML = [...history].reverse().map((item, i) => renderCard(item, i)).join('');
+
+            // Clear history
+            document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+                if (confirm('Clear all notification history? This cannot be undone.')) {
+                    localStorage.removeItem('notificationHistory');
+                    localStorage.removeItem('sentEmails');
+                    localStorage.removeItem('sentSMS');
+                    showToast('History cleared ✓', 'success');
+                    setTimeout(() => location.reload(), 1000);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

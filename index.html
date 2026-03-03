@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Wellness - Login</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="src/css/styles.css">
+    <script src="src/js/auth.js"></script>
 </head>
+
 <body class="login-page">
     <div class="login-container">
         <div class="login-left">
             <div class="illustration">
                 <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="200" cy="200" r="150" fill="url(#gradient1)" opacity="0.2"/>
-                    <circle cx="200" cy="200" r="100" fill="url(#gradient2)" opacity="0.3"/>
-                    <rect x="150" y="120" width="100" height="160" rx="20" fill="#fff" stroke="url(#gradient3)" stroke-width="3"/>
-                    <circle cx="200" cy="250" r="15" fill="url(#gradient3)"/>
+                    <circle cx="200" cy="200" r="150" fill="url(#gradient1)" opacity="0.2" />
+                    <circle cx="200" cy="200" r="100" fill="url(#gradient2)" opacity="0.3" />
+                    <rect x="150" y="120" width="100" height="160" rx="20" fill="#fff" stroke="url(#gradient3)"
+                        stroke-width="3" />
+                    <circle cx="200" cy="250" r="15" fill="url(#gradient3)" />
                     <defs>
                         <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
                             <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
@@ -37,36 +43,109 @@
             <h2>Digital Wellness Insights</h2>
             <p>Understanding your smartphone usage for a healthier digital life</p>
         </div>
-        
+
         <div class="login-right">
             <div class="login-form-container">
                 <h1>Welcome Back</h1>
                 <p class="subtitle">Sign in to access your wellness dashboard</p>
-                
-                <form class="login-form">
+
+                <form class="login-form" id="loginForm">
                     <div class="form-group">
                         <label for="email">Email Address</label>
-                        <input type="email" id="email" placeholder="you@example.com" required>
+                        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+                        <div class="error-message"></div>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" id="password" placeholder="••••••••" required>
+                        <input type="password" id="password" name="password" placeholder="••••••••" required>
+                        <div class="error-message"></div>
                     </div>
-                    
+
                     <div class="form-options">
                         <label class="checkbox-label">
-                            <input type="checkbox"> Remember me
+                            <input type="checkbox" id="remember"> Remember me
                         </label>
                         <a href="#" class="link">Forgot password?</a>
                     </div>
-                    
-                    <button type="submit" class="btn btn-primary" onclick="window.location.href='dashboard.html'; return false;">Sign In</button>
-                    
+
+                    <button type="submit" class="btn btn-primary btn-full">Sign In</button>
+
                     <p class="signup-link">Don't have an account? <a href="#" class="link">Sign up</a></p>
                 </form>
             </div>
         </div>
     </div>
+
+    <script src="src/js/common.js"></script>
+    <script>
+        // Login Form Handler
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email');
+            const password = document.getElementById('password');
+            const submitBtn = this.querySelector('button[type="submit"]');
+
+            // Clear previous errors
+            FormValidator.clearAllErrors(this);
+
+            let isValid = true;
+
+            // Validate email
+            if (!FormValidator.validateRequired(email.value)) {
+                FormValidator.showError(email, 'Email is required');
+                isValid = false;
+            } else if (!FormValidator.validateEmail(email.value)) {
+                FormValidator.showError(email, 'Please enter a valid email');
+                isValid = false;
+            } else {
+                FormValidator.clearError(email);
+            }
+
+            // Validate password
+            if (!FormValidator.validateRequired(password.value)) {
+                FormValidator.showError(password, 'Password is required');
+                isValid = false;
+            } else if (password.value.length < 6) {
+                FormValidator.showError(password, 'Password must be at least 6 characters');
+                isValid = false;
+            } else {
+                FormValidator.clearError(password);
+            }
+
+            if (isValid) {
+                // Show loading
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+                Loading.show('Signing in...');
+
+                // Simulate API call
+                setTimeout(() => {
+                    if (Auth.login(email.value, password.value)) {
+                        showToast('Login successful! Redirecting...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1000);
+                    } else {
+                        Loading.hide();
+                        submitBtn.classList.remove('loading');
+                        submitBtn.disabled = false;
+                        showToast('Invalid credentials. Please try again.', 'error');
+                    }
+                }, 1500);
+            }
+        });
+
+        // Clear error on input
+        document.querySelectorAll('#loginForm input').forEach(input => {
+            input.addEventListener('input', function () {
+                if (this.classList.contains('error')) {
+                    FormValidator.clearError(this);
+                }
+            });
+        });
+    </script>
 </body>
+
 </html>
