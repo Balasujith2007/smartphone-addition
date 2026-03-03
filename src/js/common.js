@@ -1,8 +1,7 @@
-// Common utilities and shared functionality across all pages
+// Common JavaScript for all pages - User data management and notifications
 
-// User Profile Management
-const UserProfile = {
-    // Get user data from localStorage
+// User Data Management
+const UserData = {
     get: function() {
         const defaultUser = {
             firstName: 'John',
@@ -13,22 +12,20 @@ const UserProfile = {
             avatar: 'https://ui-avatars.com/api/?name=John+Doe&size=120&background=1f2937&color=fff'
         };
         
-        const stored = localStorage.getItem('userProfile');
+        const stored = localStorage.getItem('userData');
         return stored ? JSON.parse(stored) : defaultUser;
     },
     
-    // Save user data to localStorage
-    save: function(userData) {
-        localStorage.setItem('userProfile', JSON.stringify(userData));
+    set: function(data) {
+        localStorage.setItem('userData', JSON.stringify(data));
         this.updateAllPages();
     },
     
-    // Update user info across all pages
     updateAllPages: function() {
         const user = this.get();
         const fullName = `${user.firstName} ${user.lastName}`;
         
-        // Update profile menu
+        // Update profile menu in navbar
         const profileMenus = document.querySelectorAll('.profile-menu span');
         profileMenus.forEach(menu => {
             menu.textContent = fullName;
@@ -41,27 +38,25 @@ const UserProfile = {
         });
         
         // Update profile details if on profile page
-        const profileDetails = document.querySelector('.profile-details h2');
-        if (profileDetails) {
-            profileDetails.textContent = fullName;
-        }
-        
+        const profileName = document.querySelector('.profile-details h2');
         const profileEmail = document.querySelector('.profile-details p');
-        if (profileEmail) {
-            profileEmail.textContent = user.email;
-        }
+        if (profileName) profileName.textContent = fullName;
+        if (profileEmail) profileEmail.textContent = user.email;
     }
 };
 
 // Notification Management
 const NotificationManager = {
-    // Get notifications from localStorage
-    get: function() {
+    notifications: [],
+    
+    init: function() {
+        // Load notifications from localStorage
         const stored = localStorage.getItem('notifications');
-        return stored ? JSON.parse(stored) : this.getDefaultNotifications();
+        this.notifications = stored ? JSON.parse(stored) : this.getDefaultNotifications();
+        this.render();
+        this.updateBadge();
     },
     
-    // Get default notifications
     getDefaultNotifications: function() {
         return [
             {
@@ -70,9 +65,9 @@ const NotificationManager = {
                 type: 'risk-high',
                 title: 'High Usage Alert',
                 message: 'Your screen time exceeded 7 hours today',
-                time: 'Just now',
-                timestamp: Date.now(),
-                read: false
+                time: '5 minutes ago',
+                unread: true,
+                timestamp: Date.now()
             },
             {
                 id: 2,
@@ -81,8 +76,8 @@ const NotificationManager = {
                 title: 'Weekly Report Ready',
                 message: 'Your weekly wellness report is available',
                 time: '2 hours ago',
-                timestamp: Date.now() - 7200000,
-                read: false
+                unread: true,
+                timestamp: Date.now() - 7200000
             },
             {
                 id: 3,
@@ -91,64 +86,65 @@ const NotificationManager = {
                 title: 'Goal Achieved!',
                 message: 'You stayed under 5 hours today',
                 time: 'Yesterday',
-                timestamp: Date.now() - 86400000,
-                read: false
+                unread: false,
+                timestamp: Date.now() - 86400000
             }
         ];
     },
     
-    // Save notifications
-    save: function(notifications) {
-        localStorage.setItem('notifications', JSON.stringify(notifications));
+    add: function(notification) {
+        notification.id = Date.now();
+        notification.unread = true;
+        notification.timestamp = Date.now();
+        this.notifications.unshift(notification);
+        this.save();
+        this.render();
         this.updateBadge();
     },
     
-    // Mark all as read
-    markAllRead: function() {
-        const notifications = this.get();
-        notifications.forEach(n => n.read = true);
-        this.save(notifications);
-    },
-    
-    // Mark single notification as read
-    markRead: function(id) {
-        const notifications = this.get();
-        const notification = notifications.find(n => n.id === id);
+    markAsRead: function(id) {
+        const notification = this.notifications.find(n => n.id === id);
         if (notification) {
-            notification.read = true;
-            this.save(notifications);
+            notification.unread = false;
+            this.save();
+            this.render();
+            this.updateBadge();
         }
     },
     
-    // Add new notification
-    add: function(notification) {
-        const notifications = this.get();
-        notification.id = Date.now();
-        notification.timestamp = Date.now();
-        notification.read = false;
-        notifications.unshift(notification);
-        this.save(notifications);
+    markAllAsRead: function() {
+        this.notifications.forEach(n => n.unread = false);
+        this.save();
+        this.render();
+        this.updateBadge();
     },
     
-    // Update badge count
-    updateBadge: function() {
-        const notifications = this.get();
-        const unreadCount = notifications.filter(n => !n.read).length;
-        const badges = document.querySelectorAll('.badge');
-        badges.forEach(badge => {
-            badge.textContent = unreadCount;
-            badge.style.display = unreadCount > 0 ? 'block' : 'none';
-        });
+    remove: function(id) {
+        this.notifications = this.notifications.filter(n => n.id !== id);
+        this.save();
+        this.render();
+        this.updateBadge();
     },
     
-    // Render notifications
+    save: function() {
+        localStorage.setItem('notifications', JSON.stringify(this.notifications));
+    },
+    
     render: function() {
-        const notifications = this.get();
-        const container = document.querySelector('.notification-list');
-        if (!container) return;
+        const notificationList = document.querySelector('.notification-list');
+        if (!notificationList) return;
         
-        container.innerHTML = notifications.map(n => `
-            <div class="notification-item ${n.read ? '' : 'unread'}" data-id="${n.id}">
+        if (this.notifications.length === 0) {
+            notificationList.innerHTML = `
+                <div style="padding: 40px 20px; text-align: center; color: #6b7280;">
+                    <p>No notifications</p>
+                </div>
+            `;
+            return;
+        }
+        
+        notificationList.innerHTML = this.notifications.map(n => `
+            <div class="notification-item ${n.unread ? 'unread' : ''}" data-id="${n.id}">
                 <div class="notification-icon ${n.type}">${n.icon}</div>
                 <div class="notification-content">
                     <h4>${n.title}</h4>
@@ -159,12 +155,20 @@ const NotificationManager = {
         `).join('');
         
         // Add click handlers
-        container.querySelectorAll('.notification-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const id = parseInt(this.dataset.id);
-                NotificationManager.markRead(id);
-                this.classList.remove('unread');
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const id = parseInt(item.dataset.id);
+                this.markAsRead(id);
             });
+        });
+    },
+    
+    updateBadge: function() {
+        const unreadCount = this.notifications.filter(n => n.unread).length;
+        const badges = document.querySelectorAll('.badge');
+        badges.forEach(badge => {
+            badge.textContent = unreadCount;
+            badge.style.display = unreadCount > 0 ? 'block' : 'none';
         });
     }
 };
@@ -174,9 +178,6 @@ function toggleNotifications() {
     const dropdown = document.getElementById('notificationDropdown');
     if (dropdown) {
         dropdown.classList.toggle('show');
-        if (dropdown.classList.contains('show')) {
-            NotificationManager.render();
-        }
     }
 }
 
@@ -190,83 +191,135 @@ document.addEventListener('click', function(event) {
     }
 });
 
-// Form Validation Utilities
-const Validator = {
-    email: function(email) {
-        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return re.test(email);
-    },
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Update user data on all pages
+    UserData.updateAllPages();
     
-    phone: function(phone) {
-        const re = /^[\d\s\-\+\(\)]+$/;
-        return re.test(phone) && phone.replace(/\D/g, '').length >= 10;
-    },
+    // Initialize notifications
+    NotificationManager.init();
     
-    required: function(value) {
-        return value && value.trim().length > 0;
-    },
-    
-    number: function(value, min = 0, max = Infinity) {
-        const num = parseFloat(value);
-        return !isNaN(num) && num >= min && num <= max;
+    // Setup mark all as read button
+    const markReadBtn = document.querySelector('.mark-read-btn');
+    if (markReadBtn) {
+        markReadBtn.addEventListener('click', function() {
+            NotificationManager.markAllAsRead();
+        });
     }
-};
+    
+    // Add form validation to all forms
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const inputs = form.querySelectorAll('input[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    isValid = false;
+                    input.style.borderColor = '#ef4444';
+                    
+                    // Remove error styling after user starts typing
+                    input.addEventListener('input', function() {
+                        this.style.borderColor = '';
+                    }, { once: true });
+                }
+            });
+            
+            if (!isValid) {
+                e.preventDefault();
+                showToast('Please fill in all required fields', 'error');
+            }
+        });
+    });
+});
 
-// Show toast notification
-function showToast(message, type = 'success') {
+// Toast Notification System
+function showToast(message, type = 'info') {
+    // Remove existing toast
+    const existingToast = document.querySelector('.toast-notification');
+    if (existingToast) {
+        existingToast.remove();
+    }
+    
+    // Create toast
     const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
+    toast.className = `toast-notification toast-${type}`;
     toast.innerHTML = `
-        <div class="toast-icon">${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</div>
-        <div class="toast-message">${message}</div>
+        <div class="toast-content">
+            <span class="toast-icon">${type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ'}</span>
+            <span class="toast-message">${message}</span>
+        </div>
     `;
     
     document.body.appendChild(toast);
     
-    setTimeout(() => toast.classList.add('show'), 100);
+    // Animate in
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    // Remove after 3 seconds
     setTimeout(() => {
         toast.classList.remove('show');
         setTimeout(() => toast.remove(), 300);
     }, 3000);
 }
 
-// Loading state management
-function setLoading(button, isLoading) {
-    if (isLoading) {
-        button.disabled = true;
-        button.dataset.originalText = button.innerHTML;
-        button.innerHTML = '<span class="spinner"></span> Loading...';
-    } else {
-        button.disabled = false;
-        button.innerHTML = button.dataset.originalText;
+// Add toast styles
+const toastStyles = document.createElement('style');
+toastStyles.textContent = `
+    .toast-notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: white;
+        padding: 16px 20px;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+        z-index: 10000;
+        transform: translateX(400px);
+        transition: transform 0.3s ease;
     }
-}
-
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', function() {
-    // Update user profile across all pages
-    UserProfile.updateAllPages();
     
-    // Update notification badge
-    NotificationManager.updateBadge();
-    
-    // Setup mark all as read button
-    const markReadBtn = document.querySelector('.mark-read-btn');
-    if (markReadBtn) {
-        markReadBtn.addEventListener('click', function() {
-            NotificationManager.markAllRead();
-            document.querySelectorAll('.notification-item').forEach(item => {
-                item.classList.remove('unread');
-            });
-            showToast('All notifications marked as read', 'success');
-        });
+    .toast-notification.show {
+        transform: translateX(0);
     }
-});
-
-// Export for use in other modules
-window.UserProfile = UserProfile;
-window.NotificationManager = NotificationManager;
-window.Validator = Validator;
-window.showToast = showToast;
-window.setLoading = setLoading;
-window.toggleNotifications = toggleNotifications;
+    
+    .toast-content {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .toast-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 14px;
+    }
+    
+    .toast-success .toast-icon {
+        background: #10b981;
+        color: white;
+    }
+    
+    .toast-error .toast-icon {
+        background: #ef4444;
+        color: white;
+    }
+    
+    .toast-info .toast-icon {
+        background: #3b82f6;
+        color: white;
+    }
+    
+    .toast-message {
+        font-size: 14px;
+        font-weight: 500;
+        color: #111827;
+    }
+`;
+document.head.appendChild(toastStyles);
