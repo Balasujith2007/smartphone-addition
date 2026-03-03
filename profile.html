@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Digital Wellness</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/css/styles.css">
+    <link rel="stylesheet" href="src/css/profile.css">
+    <link rel="stylesheet" href="src/css/profile.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="18" fill="url(#logo-gradient)"/>
+                    <path d="M20 28 L14 22 C12 20 12 17 14 15 C16 13 18 13 20 15 C22 13 24 13 26 15 C28 17 28 20 26 22 L20 28 Z" fill="#fff"/>
+                    <defs>
+                        <linearGradient id="logo-gradient">
+                            <stop offset="0%" stop-color="#1f2937"/>
+                            <stop offset="100%" stop-color="#374151"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span>Digital Wellness</span>
+            </div>
+            
+            <nav class="nav-menu">
+                <a href="dashboard.html" class="nav-item">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="prediction.html" class="nav-item">
+                    <span class="icon">🎯</span>
+                    <span>Prediction</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <span class="icon">📈</span>
+                    <span>Analytics</span>
+                </a>
+                <a href="profile.html" class="nav-item active">
+                    <span class="icon">👤</span>
+                    <span>Profile</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="index.html" class="nav-item">
+                    <span class="icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+        
+        <main class="main-content">
+            <header class="top-navbar">
+                <h1>My Profile</h1>
+                <div class="navbar-right">
+                    <button class="icon-btn notification-btn" onclick="toggleNotifications()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="badge">3</span>
+                    </button>
+                    <div class="profile-menu" onclick="window.location.href='profile.html'">
+                        <img src="https://ui-avatars.com/api/?name=John+Doe&background=dc2626&color=fff" alt="Profile">
+                        <span>John Doe</span>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Notification Dropdown -->
+            <div class="notification-dropdown" id="notificationDropdown">
+                <div class="notification-header">
+                    <h3>Notifications</h3>
+                    <button class="mark-read-btn">Mark all as read</button>
+                </div>
+                <div class="notification-list">
+                    <div class="notification-item unread">
+                        <div class="notification-icon risk-high">⚠️</div>
+                        <div class="notification-content">
+                            <h4>High Usage Alert</h4>
+                            <p>Your screen time exceeded 7 hours today</p>
+                            <span class="notification-time">5 minutes ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item unread">
+                        <div class="notification-icon risk-medium">📊</div>
+                        <div class="notification-content">
+                            <h4>Weekly Report Ready</h4>
+                            <p>Your weekly wellness report is available</p>
+                            <span class="notification-time">2 hours ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon risk-low">✅</div>
+                        <div class="notification-content">
+                            <h4>Goal Achieved!</h4>
+                            <p>You stayed under 5 hours today</p>
+                            <span class="notification-time">Yesterday</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="profile-container">
+                <!-- Profile Header Card -->
+                <div class="profile-header-card glass-card">
+                    <div class="profile-cover"></div>
+                    <div class="profile-info-section">
+                        <div class="profile-avatar-container">
+                            <img src="https://ui-avatars.com/api/?name=John+Doe&size=120&background=dc2626&color=fff" alt="Profile" class="profile-avatar">
+                            <button class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                </svg>
+                            </button>
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                        </div>
+                        <div class="profile-details">
+                            <h2>John Doe</h2>
+                            <p>john.doe@example.com</p>
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">127</span>
+                                    <span class="stat-label">Days Active</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value risk-medium">Medium</span>
+                                    <span class="stat-label">Current Risk</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">65%</span>
+                                    <span class="stat-label">Progress</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-edit-profile" onclick="toggleEditMode()">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Profile Content Grid -->
+                <div class="profile-content-grid">
+                    <!-- Personal Information -->
+                    <div class="profile-section glass-card">
+                        <h3>👤 Personal Information</h3>
+                        <form id="profileForm" class="profile-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>First Name</label>
+                                    <input type="text" value="John" disabled id="firstName">
+                                </div>
+                                <div class="form-group">
+                                    <label>Last Name</label>
+                                    <input type="text" value="Doe" disabled id="lastName">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address</label>
+                                <input type="email" value="john.doe@example.com" disabled id="email">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="tel" value="+1 (555) 123-4567" disabled id="phone">
+                            </div>
+                            <div class="form-group">
+                                <label>Date of Birth</label>
+                                <input type="date" value="1995-06-15" disabled id="dob">
+                            </div>
+                            <div class="form-actions" style="display: none;" id="formActions">
+                                <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Wellness Goals -->
+                    <div class="profile-section glass-card">
+                        <h3>🎯 Wellness Goals</h3>
+                        <div class="goals-list">
+                            <div class="goal-item">
+                                <div class="goal-header">
+                                    <span class="goal-icon risk-low">✅</span>
+                                    <div>
+                                        <h4>Daily Screen Time</h4>
+                                        <p>Target: 4 hours</p>
+                                    </div>
+                                </div>
+                                <div class="goal-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill risk-low" style="width: 75%"></div>
+                                    </div>
+                                    <span class="progress-text">3h / 4h</span>
+                                </div>
+                            </div>
+                            
+                            <div class="goal-item">
+                                <div class="goal-header">
+                                    <span class="goal-icon risk-medium">⏰</span>
+                                    <div>
+                                        <h4>Night Usage</h4>
+                                        <p>Target: < 1 hour</p>
+                                    </div>
+                                </div>
+                                <div class="goal-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill risk-medium" style="width: 60%"></div>
+                                    </div>
+                                    <span class="progress-text">1.5h / 1h</span>
+                                </div>
+                            </div>
+                            
+                            <div class="goal-item">
+                                <div class="goal-header">
+                                    <span class="goal-icon risk-high">🔓</span>
+                                    <div>
+                                        <h4>Phone Unlocks</h4>
+                                        <p>Target: < 80 times</p>
+                                    </div>
+                                </div>
+                                <div class="goal-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill risk-high" style="width: 90%"></div>
+                                    </div>
+                                    <span class="progress-text">127 / 80</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary btn-full">Set New Goal</button>
+                    </div>
+                    
+                    <!-- Preferences -->
+                    <div class="profile-section glass-card">
+                        <h3>⚙️ Preferences</h3>
+                        <div class="preferences-list">
+                            <div class="preference-item">
+                                <div>
+                                    <h4>Email Notifications</h4>
+                                    <p>Receive weekly reports via email</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <div>
+                                    <h4>Push Notifications</h4>
+                                    <p>Get alerts for high usage</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <div>
+                                    <h4>Daily Reminders</h4>
+                                    <p>Remind me to take breaks</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            
+                            <div class="preference-item">
+                                <div>
+                                    <h4>Data Sharing</h4>
+                                    <p>Share anonymous usage data</p>
+                                </div>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Account Security -->
+                    <div class="profile-section glass-card">
+                        <h3>🔒 Account Security</h3>
+                        <div class="security-list">
+                            <div class="security-item">
+                                <div>
+                                    <h4>Password</h4>
+                                    <p>Last changed 3 months ago</p>
+                                </div>
+                                <button class="btn btn-secondary btn-sm">Change</button>
+                            </div>
+                            
+                            <div class="security-item">
+                                <div>
+                                    <h4>Two-Factor Authentication</h4>
+                                    <p>Not enabled</p>
+                                </div>
+                                <button class="btn btn-primary btn-sm">Enable</button>
+                            </div>
+                            
+                            <div class="security-item">
+                                <div>
+                                    <h4>Active Sessions</h4>
+                                    <p>2 devices logged in</p>
+                                </div>
+                                <button class="btn btn-secondary btn-sm">Manage</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Danger Zone -->
+                <div class="danger-zone glass-card">
+                    <h3>⚠️ Danger Zone</h3>
+                    <div class="danger-actions">
+                        <div class="danger-item">
+                            <div>
+                                <h4>Export Data</h4>
+                                <p>Download all your usage data</p>
+                            </div>
+                            <button class="btn btn-secondary">Export</button>
+                        </div>
+                        <div class="danger-item">
+                            <div>
+                                <h4>Delete Account</h4>
+                                <p>Permanently delete your account and data</p>
+                            </div>
+                            <button class="btn btn-danger">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="src/js/profile.js"></script>
+</body>
+</html>

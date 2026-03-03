@@ -7,13 +7,13 @@ const dailyTrendChart = new Chart(dailyTrendCtx, {
         datasets: [{
             label: 'Screen Time (hours)',
             data: [5.2, 6.1, 5.8, 6.5, 5.9, 7.2, 6.8],
-            borderColor: '#14b8a6',
-            backgroundColor: 'rgba(20, 184, 166, 0.1)',
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
             tension: 0.4,
             fill: true,
             pointRadius: 6,
             pointHoverRadius: 8,
-            pointBackgroundColor: '#14b8a6',
+            pointBackgroundColor: '#ef4444',
             pointBorderColor: '#fff',
             pointBorderWidth: 3,
             borderWidth: 3
@@ -88,8 +88,8 @@ const hourlyPatternChart = new Chart(hourlyPatternCtx, {
         datasets: [{
             label: 'Usage (minutes)',
             data: [15, 5, 20, 45, 60, 55, 75, 90],
-            backgroundColor: 'rgba(20, 184, 166, 0.8)',
-            borderColor: '#14b8a6',
+            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+            borderColor: '#ef4444',
             borderWidth: 2,
             borderRadius: 8
         }]
@@ -167,10 +167,10 @@ const topAppsChart = new Chart(topAppsCtx, {
         datasets: [{
             data: [32, 21, 17, 19, 11],
             backgroundColor: [
-                '#14b8a6',
-                '#0d9488',
-                '#06b6d4',
-                '#10b981',
+                '#ef4444',
+                '#dc2626',
+                '#f87171',
+                '#fca5a5',
                 '#f59e0b'
             ],
             borderWidth: 4,
@@ -194,7 +194,7 @@ const topAppsChart = new Chart(topAppsCtx, {
                         family: 'Inter',
                         weight: '500'
                     },
-                    color: '#134e4a'
+                    color: '#7f1d1d'
                 }
             },
             tooltip: {

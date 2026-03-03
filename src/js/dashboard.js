@@ -7,13 +7,13 @@ const weeklyChart = new Chart(weeklyCtx, {
         datasets: [{
             label: 'Screen Time (hours)',
             data: [4.5, 5.2, 6.1, 5.8, 5.5, 7.2, 6.8],
-            borderColor: '#14b8a6',
-            backgroundColor: 'rgba(20, 184, 166, 0.1)',
+            borderColor: '#ef4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
             tension: 0.4,
             fill: true,
             pointRadius: 6,
             pointHoverRadius: 8,
-            pointBackgroundColor: '#14b8a6',
+            pointBackgroundColor: '#ef4444',
             pointBorderColor: '#fff',
             pointBorderWidth: 3,
             borderWidth: 3
@@ -61,7 +61,7 @@ const weeklyChart = new Chart(weeklyCtx, {
                         size: 12,
                         family: 'Inter'
                     },
-                    color: '#6b7280',
+                    color: '#991b1b',
                     callback: function(value) {
                         return value + 'h';
                     }
@@ -98,10 +98,10 @@ const categoryChart = new Chart(categoryCtx, {
         datasets: [{
             data: [35, 20, 15, 20, 10],
             backgroundColor: [
-                '#14b8a6',
-                '#0d9488',
-                '#06b6d4',
-                '#10b981',
+                '#ef4444',
+                '#dc2626',
+                '#f87171',
+                '#fca5a5',
                 '#f59e0b'
             ],
             borderWidth: 4,
@@ -125,7 +125,7 @@ const categoryChart = new Chart(categoryCtx, {
                         family: 'Inter',
                         weight: '500'
                     },
-                    color: '#134e4a'
+                    color: '#7f1d1d'
                 }
             },
             tooltip: {
@@ -151,3 +151,35 @@ const categoryChart = new Chart(categoryCtx, {
         cutout: '65%'
     }
 });
+
+
+// Toggle Notifications
+function toggleNotifications() {
+    const dropdown = document.getElementById('notificationDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Close notifications when clicking outside
+document.addEventListener('click', function(event) {
+    const dropdown = document.getElementById('notificationDropdown');
+    const notificationBtn = document.querySelector('.notification-btn');
+    
+    if (dropdown && !dropdown.contains(event.target) && !notificationBtn.contains(event.target)) {
+        dropdown.classList.remove('show');
+    }
+});
+
+// Mark all as read
+const markReadBtn = document.querySelector('.mark-read-btn');
+if (markReadBtn) {
+    markReadBtn.addEventListener('click', function() {
+        document.querySelectorAll('.notification-item').forEach(item => {
+            item.classList.remove('unread');
+        });
+        const badge = document.querySelector('.badge');
+        if (badge) {
+            badge.textContent = '0';
+            badge.style.display = 'none';
+        }
+    });
+}
