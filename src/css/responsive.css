@@ -1,10 +1,9 @@
 /* ═══════════════════════════════════════════════════════════
-   RESPONSIVE DESIGN - Mobile First Approach
+   RESPONSIVE DESIGN - Horizontal Top Navbar
    ═══════════════════════════════════════════════════════════ */
 
-/* ══ Base Mobile Styles (320px+) ═══════════════════════════ */
+/* ══ Base Mobile Styles (320px - 480px) ════════════════════ */
 @media (max-width: 480px) {
-    /* Typography */
     body {
         font-size: 14px;
     }
@@ -21,33 +20,57 @@
         font-size: 18px !important;
     }
 
-    /* Sidebar - Mobile Menu */
+    /* Top Nav - stack into hamburger */
     .sidebar {
         position: fixed;
-        left: -280px;
         top: 0;
-        width: 280px;
-        height: 100vh;
-        z-index: 1000;
-        transition: left 0.3s ease;
-    }
-
-    .sidebar.active {
         left: 0;
+        right: 0;
+        height: auto;
+        flex-direction: column;
+        padding: 12px 16px;
+        z-index: 1000;
     }
 
-    /* Mobile Menu Toggle */
+    .sidebar .logo {
+        margin-right: 0;
+        margin-bottom: 0;
+        font-size: 15px;
+    }
+
+    .nav-menu {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        gap: 4px;
+        padding-top: 12px;
+    }
+
+    .nav-menu.active {
+        display: flex;
+    }
+
+    .sidebar-footer {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .sidebar-footer .nav-item {
+        width: 100%;
+    }
+
+    /* Mobile hamburger toggle */
     .mobile-menu-toggle {
         display: block !important;
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1001;
-        background: var(--bg-secondary);
-        border: 1px solid var(--border-color);
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(6, 182, 212, 0.1);
+        border: 1px solid rgba(6, 182, 212, 0.2);
         border-radius: 10px;
-        padding: 10px;
+        padding: 8px;
         cursor: pointer;
+        z-index: 1001;
     }
 
     .mobile-menu-toggle svg {
@@ -58,12 +81,11 @@
 
     /* Main Content */
     .main-content {
-        margin-left: 0 !important;
         padding: 80px 16px 20px !important;
         width: 100%;
     }
 
-    /* Top Navbar */
+    /* Top inner navbar */
     .top-navbar {
         padding: 12px 16px !important;
         flex-wrap: wrap;
@@ -107,42 +129,26 @@
     .form-group input,
     .form-group select,
     .form-group textarea {
-        font-size: 16px !important; /* Prevents zoom on iOS */
+        font-size: 16px !important;
         padding: 12px !important;
     }
 
-    /* Stats Grid */
-    .stats-grid {
+    /* Grids */
+    .stats-grid,
+    .dashboard-grid {
         grid-template-columns: 1fr !important;
         gap: 12px !important;
     }
 
-    /* Dashboard */
-    .dashboard-grid {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-    }
-
-    /* Prediction Form */
-    .prediction-container {
-        grid-template-columns: 1fr !important;
-        padding: 16px !important;
-    }
-
+    .prediction-container,
     .form-row {
         grid-template-columns: 1fr !important;
     }
 
-    /* Analytics */
     .analytics-charts {
         grid-template-columns: 1fr !important;
     }
 
-    .chart-container {
-        height: 250px !important;
-    }
-
-    /* Profile */
     .profile-content-grid {
         grid-template-columns: 1fr !important;
     }
@@ -161,25 +167,29 @@
         text-align: center;
     }
 
+    .chart-container {
+        height: 250px !important;
+    }
+
     /* Tables */
     table {
         font-size: 12px !important;
     }
 
-    th, td {
+    th,
+    td {
         padding: 8px 4px !important;
     }
 
     /* Modals */
     .modal-content,
-    #profileModal > div {
+    #profileModal>div {
         width: 95% !important;
         max-width: 95% !important;
         padding: 20px !important;
         margin: 20px auto !important;
     }
 
-    /* Notifications */
     .notification-dropdown {
         width: 100vw !important;
         right: 0 !important;
@@ -187,7 +197,6 @@
         border-radius: 0 !important;
     }
 
-    /* Toast */
     .toast {
         width: calc(100% - 32px) !important;
         left: 16px !important;
@@ -195,7 +204,7 @@
         bottom: 16px !important;
     }
 
-    /* Login Page */
+    /* Login */
     .login-container {
         grid-template-columns: 1fr !important;
         padding: 20px !important;
@@ -210,7 +219,7 @@
         padding: 20px !important;
     }
 
-    /* Result Page */
+    /* Result */
     .result-container {
         padding: 16px !important;
     }
@@ -225,119 +234,113 @@
         height: 200px !important;
     }
 
-    /* Hide desktop-only elements */
     .desktop-only {
         display: none !important;
     }
 }
 
-/* ══ Tablet Styles (481px - 768px) ═════════════════════════ */
+/* ══ Tablet (481px - 768px) ════════════════════════════════ */
 @media (min-width: 481px) and (max-width: 768px) {
-    /* Sidebar */
     .sidebar {
-        width: 240px;
+        height: 64px;
+        padding: 0 20px;
     }
 
-    /* Main Content */
     .main-content {
-        margin-left: 0;
-        padding: 100px 24px 24px;
+        padding: 84px 20px 20px;
     }
 
-    /* Stats Grid */
+    .nav-item span:not(.icon) {
+        display: none;
+    }
+
+    .nav-item .icon {
+        font-size: 20px;
+    }
+
+    .nav-item {
+        padding: 8px 12px;
+    }
+
+    .logo span {
+        display: none;
+    }
+
+    .logo svg {
+        width: 32px;
+        height: 32px;
+    }
+
     .stats-grid {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 
-    /* Dashboard */
     .dashboard-grid {
         grid-template-columns: 1fr !important;
     }
 
-    /* Forms */
     .form-row {
         grid-template-columns: 1fr !important;
     }
 
-    /* Profile */
     .profile-content-grid {
         grid-template-columns: 1fr !important;
     }
 
-    /* Analytics */
     .analytics-charts {
         grid-template-columns: 1fr !important;
     }
 
-    /* Mobile menu toggle */
     .mobile-menu-toggle {
-        display: block !important;
-    }
-
-    .sidebar {
-        position: fixed;
-        left: -240px;
-        z-index: 1000;
-        transition: left 0.3s ease;
-    }
-
-    .sidebar.active {
-        left: 0;
+        display: none !important;
     }
 }
 
 /* ══ Small Desktop (769px - 1024px) ════════════════════════ */
 @media (min-width: 769px) and (max-width: 1024px) {
-    /* Sidebar */
     .sidebar {
-        width: 240px;
+        height: 64px;
+        padding: 0 24px;
     }
 
-    /* Main Content */
     .main-content {
-        margin-left: 240px;
-        padding: 24px;
+        padding: 88px 24px 24px;
     }
 
-    /* Stats Grid */
     .stats-grid {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 
-    /* Dashboard */
     .dashboard-grid {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 
-    /* Profile */
     .profile-content-grid {
         grid-template-columns: repeat(2, 1fr) !important;
     }
 
-    /* Analytics */
     .analytics-charts {
         grid-template-columns: repeat(2, 1fr) !important;
     }
+
+    .mobile-menu-toggle {
+        display: none !important;
+    }
 }
 
-/* ══ Large Desktop (1025px+) ═══════════════════════════════ */
+/* ══ Large Desktop (1025px+) ══════════════════════════════ */
 @media (min-width: 1025px) {
     .mobile-menu-toggle {
         display: none !important;
     }
 
     .sidebar {
-        position: fixed;
-        left: 0;
+        height: 64px;
     }
 }
 
-/* ══ Landscape Mobile ══════════════════════════════════════ */
+/* ══ Landscape Mobile ═════════════════════════════════════ */
 @media (max-height: 600px) and (orientation: landscape) {
-    .sidebar {
-        overflow-y: auto;
-    }
-
     .main-content {
         padding-top: 80px;
     }
@@ -347,9 +350,9 @@
     }
 }
 
-/* ══ Touch Device Optimizations ════════════════════════════ */
+/* ══ Touch Device Optimizations ═══════════════════════════ */
 @media (hover: none) and (pointer: coarse) {
-    /* Larger touch targets */
+
     button,
     .btn,
     a,
@@ -358,21 +361,20 @@
         min-width: 44px;
     }
 
-    /* Remove hover effects */
     .btn:hover,
     .nav-item:hover {
         transform: none;
     }
 
-    /* Better tap feedback */
     button:active,
     .btn:active {
         transform: scale(0.98);
     }
 }
 
-/* ══ Print Styles ══════════════════════════════════════════ */
+/* ══ Print ════════════════════════════════════════════════ */
 @media print {
+
     .sidebar,
     .top-navbar,
     .mobile-menu-toggle,
@@ -394,8 +396,9 @@
     }
 }
 
-/* ══ Accessibility - Reduced Motion ════════════════════════ */
+/* ══ Reduced Motion ══════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
@@ -405,12 +408,7 @@
     }
 }
 
-/* ══ Dark Mode Support (if needed) ═════════════════════════ */
-@media (prefers-color-scheme: dark) {
-    /* Already dark by default */
-}
-
-/* ══ High Contrast Mode ════════════════════════════════════ */
+/* ══ High Contrast ═══════════════════════════════════════ */
 @media (prefers-contrast: high) {
     .glass-card {
         border: 2px solid var(--primary);

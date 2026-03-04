@@ -1,16 +1,26 @@
 const { Pool } = require('pg');
 const logger = require('../utils/logger');
 
-const pool = new Pool({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+// Database configuration with fallbacks
+const dbConfig = {
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
-});
+};
+
+// Fallback to individual parameters if DATABASE_URL is not set
+if (!process.env.DATABASE_URL) {
+    dbConfig.host = process.env.DB_HOST || 'localhost';
+    dbConfig.port = process.env.DB_PORT || 5432;
+    dbConfig.database = process.env.DB_NAME || 'smartphone_addiction';
+    dbConfig.user = process.env.DB_USER || 'postgres';
+    dbConfig.password = process.env.DB_PASSWORD || '';
+    delete dbConfig.connectionString;
+}
+
+const pool = new Pool(dbConfig);
 
 pool.on('connect', () => {
     logger.info('Database connected successfully');
@@ -23,6 +33,12 @@ pool.on('error', (err) => {
 
 // Initialize database tables
 const initDatabase = async () => {
+    // Skip database initialization if no database is configured
+    if (!process.env.DATABASE_URL && !process.env.DB_HOST) {
+        logger.warn('No database configured. Skipping database initialization.');
+        return;
+    }
+
     const createTablesQuery = `
         CREATE TABLE IF NOT EXISTS users (
             id SERIAL PRIMARY KEY,

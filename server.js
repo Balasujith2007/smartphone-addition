@@ -69,8 +69,13 @@ app.use(errorHandler);
 // Initialize database and start server
 const startServer = async () => {
     try {
-        // Initialize database tables
-        await initDatabase();
+        // Initialize database tables (optional - won't fail if DB not configured)
+        try {
+            await initDatabase();
+        } catch (dbError) {
+            logger.warn('Database initialization skipped or failed:', dbError.message);
+            logger.info('Server will start without database. Some features may not work.');
+        }
         
         // Start server
         app.listen(PORT, () => {
