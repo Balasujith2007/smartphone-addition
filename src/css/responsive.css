@@ -1,0 +1,423 @@
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE DESIGN - Mobile First Approach
+   ═══════════════════════════════════════════════════════════ */
+
+/* ══ Base Mobile Styles (320px+) ═══════════════════════════ */
+@media (max-width: 480px) {
+    /* Typography */
+    body {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 24px !important;
+    }
+
+    h2 {
+        font-size: 20px !important;
+    }
+
+    h3 {
+        font-size: 18px !important;
+    }
+
+    /* Sidebar - Mobile Menu */
+    .sidebar {
+        position: fixed;
+        left: -280px;
+        top: 0;
+        width: 280px;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    /* Mobile Menu Toggle */
+    .mobile-menu-toggle {
+        display: block !important;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .mobile-menu-toggle svg {
+        width: 24px;
+        height: 24px;
+        stroke: var(--text-primary);
+    }
+
+    /* Main Content */
+    .main-content {
+        margin-left: 0 !important;
+        padding: 80px 16px 20px !important;
+        width: 100%;
+    }
+
+    /* Top Navbar */
+    .top-navbar {
+        padding: 12px 16px !important;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .top-navbar h1 {
+        font-size: 20px !important;
+        width: 100%;
+    }
+
+    .navbar-right {
+        gap: 8px !important;
+    }
+
+    .profile-menu span {
+        display: none;
+    }
+
+    .profile-menu img {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    /* Cards */
+    .glass-card,
+    .stat-card,
+    .metric-card {
+        padding: 16px !important;
+        margin-bottom: 16px;
+    }
+
+    /* Buttons */
+    .btn,
+    button {
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+    }
+
+    /* Forms */
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        padding: 12px !important;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+    }
+
+    /* Dashboard */
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+    }
+
+    /* Prediction Form */
+    .prediction-container {
+        grid-template-columns: 1fr !important;
+        padding: 16px !important;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Analytics */
+    .analytics-charts {
+        grid-template-columns: 1fr !important;
+    }
+
+    .chart-container {
+        height: 250px !important;
+    }
+
+    /* Profile */
+    .profile-content-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .profile-header-card {
+        padding: 16px !important;
+    }
+
+    .profile-stats {
+        flex-direction: column !important;
+        gap: 12px !important;
+    }
+
+    .stat-item {
+        width: 100% !important;
+        text-align: center;
+    }
+
+    /* Tables */
+    table {
+        font-size: 12px !important;
+    }
+
+    th, td {
+        padding: 8px 4px !important;
+    }
+
+    /* Modals */
+    .modal-content,
+    #profileModal > div {
+        width: 95% !important;
+        max-width: 95% !important;
+        padding: 20px !important;
+        margin: 20px auto !important;
+    }
+
+    /* Notifications */
+    .notification-dropdown {
+        width: 100vw !important;
+        right: 0 !important;
+        left: 0 !important;
+        border-radius: 0 !important;
+    }
+
+    /* Toast */
+    .toast {
+        width: calc(100% - 32px) !important;
+        left: 16px !important;
+        right: 16px !important;
+        bottom: 16px !important;
+    }
+
+    /* Login Page */
+    .login-container {
+        grid-template-columns: 1fr !important;
+        padding: 20px !important;
+        min-height: 100vh;
+    }
+
+    .login-left {
+        display: none;
+    }
+
+    .login-right {
+        padding: 20px !important;
+    }
+
+    /* Result Page */
+    .result-container {
+        padding: 16px !important;
+    }
+
+    .score-display {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+
+    .score-circle {
+        width: 200px !important;
+        height: 200px !important;
+    }
+
+    /* Hide desktop-only elements */
+    .desktop-only {
+        display: none !important;
+    }
+}
+
+/* ══ Tablet Styles (481px - 768px) ═════════════════════════ */
+@media (min-width: 481px) and (max-width: 768px) {
+    /* Sidebar */
+    .sidebar {
+        width: 240px;
+    }
+
+    /* Main Content */
+    .main-content {
+        margin-left: 0;
+        padding: 100px 24px 24px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Dashboard */
+    .dashboard-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Forms */
+    .form-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Profile */
+    .profile-content-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Analytics */
+    .analytics-charts {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* Mobile menu toggle */
+    .mobile-menu-toggle {
+        display: block !important;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: -240px;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+}
+
+/* ══ Small Desktop (769px - 1024px) ════════════════════════ */
+@media (min-width: 769px) and (max-width: 1024px) {
+    /* Sidebar */
+    .sidebar {
+        width: 240px;
+    }
+
+    /* Main Content */
+    .main-content {
+        margin-left: 240px;
+        padding: 24px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Dashboard */
+    .dashboard-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Profile */
+    .profile-content-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* Analytics */
+    .analytics-charts {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+}
+
+/* ══ Large Desktop (1025px+) ═══════════════════════════════ */
+@media (min-width: 1025px) {
+    .mobile-menu-toggle {
+        display: none !important;
+    }
+
+    .sidebar {
+        position: fixed;
+        left: 0;
+    }
+}
+
+/* ══ Landscape Mobile ══════════════════════════════════════ */
+@media (max-height: 600px) and (orientation: landscape) {
+    .sidebar {
+        overflow-y: auto;
+    }
+
+    .main-content {
+        padding-top: 80px;
+    }
+
+    .login-container {
+        min-height: auto;
+    }
+}
+
+/* ══ Touch Device Optimizations ════════════════════════════ */
+@media (hover: none) and (pointer: coarse) {
+    /* Larger touch targets */
+    button,
+    .btn,
+    a,
+    .nav-item {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Remove hover effects */
+    .btn:hover,
+    .nav-item:hover {
+        transform: none;
+    }
+
+    /* Better tap feedback */
+    button:active,
+    .btn:active {
+        transform: scale(0.98);
+    }
+}
+
+/* ══ Print Styles ══════════════════════════════════════════ */
+@media print {
+    .sidebar,
+    .top-navbar,
+    .mobile-menu-toggle,
+    .notification-dropdown,
+    .toast,
+    button,
+    .btn {
+        display: none !important;
+    }
+
+    .main-content {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+
+    .glass-card {
+        border: 1px solid #000;
+        box-shadow: none;
+    }
+}
+
+/* ══ Accessibility - Reduced Motion ════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ══ Dark Mode Support (if needed) ═════════════════════════ */
+@media (prefers-color-scheme: dark) {
+    /* Already dark by default */
+}
+
+/* ══ High Contrast Mode ════════════════════════════════════ */
+@media (prefers-contrast: high) {
+    .glass-card {
+        border: 2px solid var(--primary);
+    }
+
+    button,
+    .btn {
+        border: 2px solid currentColor;
+    }
+}
