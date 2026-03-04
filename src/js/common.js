@@ -69,7 +69,7 @@ const UserData = {
             if (user.avatar && !user.avatar.includes('ui-avatars.com')) {
                 img.src = user.avatar;
             } else {
-                img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&size=120&background=1f2937&color=fff&bold=true`;
+                img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&size=120&background=06b6d4&color=fff&bold=true`;
             }
         });
 

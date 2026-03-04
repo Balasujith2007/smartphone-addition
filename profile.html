@@ -121,8 +121,24 @@
                     <div class="profile-cover"></div>
                     <div class="profile-info-section">
                         <div class="profile-avatar-container">
-                            <img src="https://ui-avatars.com/api/?name=JD&size=120&background=1f2937&color=fff&bold=true"
-                                alt="Profile" class="profile-avatar">
+                            <img id="profileAvatarImg" src="" alt="Profile" class="profile-avatar">
+                            <script>
+                                (function () {
+                                    try {
+                                        var ud = JSON.parse(localStorage.getItem('userData') || '{}');
+                                        var fn = ud.firstName || 'J';
+                                        var ln = ud.lastName || 'D';
+                                        var initials = fn.charAt(0) + ln.charAt(0);
+                                        var src = ud.avatar && !ud.avatar.includes('ui-avatars.com')
+                                            ? ud.avatar
+                                            : 'https://ui-avatars.com/api/?name=' + encodeURIComponent(initials) + '&size=120&background=06b6d4&color=fff&bold=true';
+                                        document.getElementById('profileAvatarImg').src = src;
+                                    } catch (e) {
+                                        document.getElementById('profileAvatarImg').src =
+                                            'https://ui-avatars.com/api/?name=JD&size=120&background=06b6d4&color=fff&bold=true';
+                                    }
+                                })();
+                            </script>
                             <button class="avatar-edit-btn" onclick="document.getElementById('avatarInput').click()">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2">
@@ -133,8 +149,8 @@
                             <input type="file" id="avatarInput" accept="image/*" style="display: none;">
                         </div>
                         <div class="profile-details">
-                            <h2>John Doe</h2>
-                            <p>john.doe@example.com</p>
+                            <h2 id="profileDisplayName">Loading...</h2>
+                            <p id="profileDisplayEmail"></p>
                             <div class="profile-stats">
                                 <div class="stat-item">
                                     <span class="stat-value">127</span>
@@ -170,24 +186,24 @@
                             <div class="form-row">
                                 <div class="form-group">
                                     <label>First Name</label>
-                                    <input type="text" value="John" disabled id="firstName">
+                                    <input type="text" value="" disabled id="firstName" placeholder="First Name">
                                 </div>
                                 <div class="form-group">
                                     <label>Last Name</label>
-                                    <input type="text" value="Doe" disabled id="lastName">
+                                    <input type="text" value="" disabled id="lastName" placeholder="Last Name">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Email Address</label>
-                                <input type="email" value="john.doe@example.com" disabled id="email">
+                                <input type="email" value="" disabled id="email" placeholder="Email Address">
                             </div>
                             <div class="form-group">
                                 <label>Phone Number</label>
-                                <input type="tel" value="+1 (555) 123-4567" disabled id="phone">
+                                <input type="tel" value="" disabled id="phone" placeholder="Phone Number">
                             </div>
                             <div class="form-group">
                                 <label>Date of Birth</label>
-                                <input type="date" value="1995-06-15" disabled id="dob">
+                                <input type="date" value="" disabled id="dob">
                             </div>
                             <div class="form-actions" style="display: none;" id="formActions">
                                 <button type="button" class="btn btn-secondary" onclick="cancelEdit()">Cancel</button>

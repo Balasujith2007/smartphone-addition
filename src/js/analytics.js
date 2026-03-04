@@ -1,6 +1,4 @@
-// ============================================================
-// Period-specific data
-// ============================================================
+
 const periodData = {
     today: {
         label: 'Today',
@@ -102,10 +100,6 @@ const periodData = {
 const statusLabel = { good: 'Good', warn: 'Moderate', risk: 'High Risk' };
 
 let activePeriod = 'week';
-
-// ============================================================
-// Render: App Usage Progress Bars
-// ============================================================
 function renderAppUsage(apps) {
     const container = document.getElementById('appUsageList');
     if (!container) return;
@@ -122,7 +116,7 @@ function renderAppUsage(apps) {
             </div>
         </div>
     `).join('');
-    // Animate bars after render
+
     setTimeout(() => {
         apps.forEach((a, i) => {
             const bar = document.getElementById(`bar-${i}`);
@@ -131,9 +125,7 @@ function renderAppUsage(apps) {
     }, 80);
 }
 
-// ============================================================
-// Render: Heatmap
-// ============================================================
+
 function renderHeatmap(data) {
     const grid = document.getElementById('heatmapGrid');
     if (!grid) return;
@@ -146,9 +138,6 @@ function renderHeatmap(data) {
     }).join('');
 }
 
-// ============================================================
-// Render: Weekly Summary Table
-// ============================================================
 function renderWeeklyTable(rows, label) {
     const tbody = document.getElementById('weeklyTableBody');
     const subtitle = document.getElementById('weeklySubtitle');
@@ -165,10 +154,6 @@ function renderWeeklyTable(rows, label) {
         </tr>
     `).join('');
 }
-
-// ============================================================
-// Render: App Detail List
-// ============================================================
 function renderAppDetailList(apps) {
     const el = document.getElementById('appDetailList');
     if (!el) return;
@@ -188,10 +173,6 @@ function renderAppDetailList(apps) {
         </div>
     `).join('');
 }
-
-// ============================================================
-// Render: Insights
-// ============================================================
 function renderInsights(insights) {
     const el = document.getElementById('insightsGrid');
     if (!el) return;
@@ -206,9 +187,6 @@ function renderInsights(insights) {
     `).join('');
 }
 
-// ============================================================
-// Render: Metric Cards
-// ============================================================
 function renderMetrics(m, label) {
     const suffix = label === 'Today' ? 'yesterday' : 'prev. period';
     const cards = document.querySelectorAll('.metric-card');
@@ -239,10 +217,6 @@ function renderMetrics(m, label) {
         }
     });
 }
-
-// ============================================================
-// Apply a period
-// ============================================================
 function applyPeriod(key) {
     activePeriod = key;
     const pd = periodData[key];
@@ -254,9 +228,6 @@ function applyPeriod(key) {
     renderInsights(pd.insights);
 }
 
-// ============================================================
-// Period button click handlers
-// ============================================================
 const periodMap = { 'Today': 'today', 'This Week': 'week', 'This Month': 'month', 'Last 3 Months': 'quarter' };
 
 document.querySelectorAll('.period-btn').forEach(btn => {
@@ -269,9 +240,6 @@ document.querySelectorAll('.period-btn').forEach(btn => {
     });
 });
 
-// ============================================================
-// Init on DOM ready
-// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     // Load user info
     const user = UserData.get();

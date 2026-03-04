@@ -22,15 +22,17 @@ function toggleEditMode() {
     inputs.forEach(input => {
         input.disabled = !isDisabled;
         if (!isDisabled) {
-            // Switching back to view mode
+            // Switching back to view mode — restore white/theme text
             input.style.background = '';
             input.style.cursor = 'not-allowed';
             input.style.borderColor = '';
+            input.style.color = 'var(--text-primary, #e8f4fd)';
         } else {
-            // Switching to edit mode
+            // Switching to edit mode — black text for visibility while typing
             input.style.background = 'var(--bg-tertiary, #262626)';
             input.style.cursor = 'text';
-            input.style.borderColor = 'var(--border-light, #3a3a3a)';
+            input.style.borderColor = 'rgba(6,182,212,0.4)';
+            input.style.color = '#ffffff';
         }
     });
 
@@ -62,17 +64,31 @@ function cancelEdit() {
 // Update display name everywhere
 // ============================================================
 function updateDisplayName() {
-    const firstName = document.getElementById('firstName').value;
-    const lastName = document.getElementById('lastName').value;
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
     const fullName = `${firstName} ${lastName}`;
-    const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`;
+    
+    // Get first letter of first name and first letter of last name
+    const firstInitial = firstName.charAt(0).toUpperCase() || 'J';
+    const lastInitial = lastName.charAt(0).toUpperCase() || 'D';
+    const initials = `${firstInitial}${lastInitial}`;
 
-    document.querySelector('.profile-details h2').textContent = fullName;
-    document.querySelector('.profile-menu span').textContent = fullName;
+    // Update profile header display
+    const displayName = document.getElementById('profileDisplayName');
+    const displayEmail = document.getElementById('profileDisplayEmail');
+    if (displayName) displayName.textContent = fullName;
+    if (displayEmail) displayEmail.textContent = document.getElementById('email').value;
 
-    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&size=120&background=6366f1&color=fff&bold=true`;
-    document.querySelector('.profile-avatar').src = avatarUrl;
-    document.querySelector('.profile-menu img').src = avatarUrl;
+    // Update navbar name
+    const navSpan = document.querySelector('.profile-menu span');
+    if (navSpan) navSpan.textContent = fullName;
+
+    // Update avatar with initials
+    const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(initials)}&size=120&background=06b6d4&color=fff&bold=true`;
+    const avatar = document.querySelector('.profile-avatar');
+    const navImg = document.querySelector('.profile-menu img');
+    if (avatar) avatar.src = avatarUrl;
+    if (navImg) navImg.src = avatarUrl;
 }
 
 // ============================================================
@@ -502,13 +518,23 @@ window.addEventListener('DOMContentLoaded', function () {
     document.getElementById('phone').value = profile.phone;
     document.getElementById('dob').value = profile.dob;
 
-    updateDisplayName();
-    document.querySelector('.profile-details p').textContent = profile.email;
+    // Update the display name & email in the header (no hardcoded values in HTML now)
+    const displayName = document.getElementById('profileDisplayName');
+    const displayEmail = document.getElementById('profileDisplayEmail');
+    if (displayName) displayName.textContent = `${profile.firstName} ${profile.lastName}`;
+    if (displayEmail) displayEmail.textContent = profile.email;
 
     if (profile.avatar) {
         document.querySelector('.profile-avatar').src = profile.avatar;
         document.querySelector('.profile-menu img').src = profile.avatar;
     }
+
+    // Add real-time update listeners for name fields
+    const firstNameInput = document.getElementById('firstName');
+    const lastNameInput = document.getElementById('lastName');
+    
+    firstNameInput.addEventListener('input', updateDisplayName);
+    lastNameInput.addEventListener('input', updateDisplayName);
 
     // Wire: Set New Goal
     const setGoalBtn = document.querySelector('.btn-full');

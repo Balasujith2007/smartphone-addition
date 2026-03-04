@@ -1,5 +1,8 @@
-document.getElementById('predictionForm').addEventListener('submit', function(e) {
+document.getElementById('predictionForm').addEventListener('submit', async function(e) {
     e.preventDefault();
+    
+    // Get user data
+    const userData = UserData.get();
     
     // Get form values
     const screenTime = parseFloat(document.getElementById('screenTime').value);
@@ -11,7 +14,7 @@ document.getElementById('predictionForm').addEventListener('submit', function(e)
     
     // Validate inputs
     if (!screenTime || !unlockFreq || !socialMedia || !gaming || !nightUsage || !avgSession) {
-        alert('Please fill in all fields');
+        showToast('Please fill in all fields', 'error');
         return;
     }
     
@@ -27,31 +30,95 @@ document.getElementById('predictionForm').addEventListener('submit', function(e)
     // Show notification toast
     showToast('Analyzing your usage patterns...', 'info');
     
-    // Simulate ML prediction with realistic algorithm
-    setTimeout(() => {
-        const results = calculateAddictionRisk(
-            screenTime, 
-            unlockFreq, 
-            socialMedia, 
-            gaming, 
-            nightUsage, 
-            avgSession
-        );
+    try {
+        // Calculate productivity hours (estimate based on other metrics)
+        const productivityHours = Math.max(0, screenTime - socialMedia - gaming);
         
-        // Store results in sessionStorage
-        sessionStorage.setItem('predictionResults', JSON.stringify(results));
+        // Send to backend API
+        const response = await fetch('http://localhost:3000/api/predictions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                email: userData.email,
+                phone: userData.phone || '+1234567890',
+                screenTimeHours: screenTime,
+                nightUsageHours: nightUsage,
+                unlocksPerDay: unlockFreq,
+                socialMediaHours: socialMedia,
+                productivityHours: productivityHours
+            })
+        });
+
+        const result = await response.json();
         
-        // Send notification to user's email and mobile
-        sendNotificationToUser(results);
+        if (result.success) {
+            // Store results in sessionStorage
+            const predictionData = {
+                riskLevel: result.data.riskLevel,
+                riskScore: result.data.riskScore,
+                confidence: result.data.confidence,
+                recommendation: result.data.recommendation,
+                screenTime: screenTime,
+                unlockFreq: unlockFreq,
+                socialMedia: socialMedia,
+                gaming: gaming,
+                nightUsage: nightUsage,
+                avgSession: avgSession,
+                timestamp: new Date().toISOString()
+            };
+            
+            sessionStorage.setItem('predictionResults', JSON.stringify(predictionData));
+            
+            // Show success notification
+            const notificationMsg = result.data.notifications.sms && result.data.notifications.email
+                ? '📧 Results sent to your email and mobile!'
+                : result.data.notifications.email
+                ? '📧 Results sent to your email!'
+                : '✅ Prediction completed!';
+            
+            showToast(notificationMsg, 'success');
+            
+            // Redirect to results page after a short delay
+            setTimeout(() => {
+                window.location.href = 'result.html';
+            }, 1500);
+        } else {
+            // Handle API error
+            showToast(result.message || 'Prediction failed. Please try again.', 'error');
+            
+            // Reset button state
+            btnText.style.display = 'inline';
+            btnLoader.style.display = 'none';
+            submitBtn.disabled = false;
+        }
+    } catch (error) {
+        console.error('Prediction error:', error);
         
-        // Show success notification
-        showToast('📧 Results sent to your email and mobile!', 'success');
+        // Fallback to local calculation if backend is unavailable
+        showToast('Using offline mode...', 'info');
         
-        // Redirect to results page after a short delay
         setTimeout(() => {
-            window.location.href = 'result.html';
-        }, 1500);
-    }, 2000);
+            const results = calculateAddictionRisk(
+                screenTime, 
+                unlockFreq, 
+                socialMedia, 
+                gaming, 
+                nightUsage, 
+                avgSession
+            );
+            
+            sessionStorage.setItem('predictionResults', JSON.stringify(results));
+            showToast('✅ Prediction completed (offline mode)', 'success');
+            
+            setTimeout(() => {
+                window.location.href = 'result.html';
+            }, 1500);
+        }, 1000);
+    }
 });
 
 function calculateAddictionRisk(screenTime, unlockFreq, socialMedia, gaming, nightUsage, avgSession) {

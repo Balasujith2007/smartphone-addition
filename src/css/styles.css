@@ -5,6 +5,18 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    background: #050d1a;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden;
+}
+
 :root {
     /* ── Professional "Midnight Pro" Palette ──────────────────
        Primary  : Electric Cyan  → Indigo  (trust + innovation)
@@ -51,6 +63,7 @@
 body {
     font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     background: var(--bg-gradient);
+    background-attachment: fixed;
     color: var(--text-primary);
     line-height: 1.6;
     min-height: 100vh;
@@ -58,6 +71,8 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     animation: pageLoad 0.4s ease-out;
+    overflow-x: hidden;
+    position: relative;
 }
 
 /* ══ Page load fade-in ══════════════════════════════════ */
@@ -74,22 +89,33 @@ body {
 }
 
 /* ══ Custom Scrollbar ════════════════════════════════════ */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(6, 182, 212, 0.35) #050d1a;
+}
+
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 8px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-primary);
+    background: #050d1a;
+    border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: rgba(6, 182, 212, 0.35);
-    border-radius: 99px;
+    border-radius: 10px;
+    border: 2px solid #050d1a;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(6, 182, 212, 0.6);
+}
+
+::-webkit-scrollbar-corner {
+    background: #050d1a;
 }
 
 /* ══ Floating orbs (login) ═══════════════════════════════ */

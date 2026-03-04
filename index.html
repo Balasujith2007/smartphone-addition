@@ -12,6 +12,238 @@
         rel="stylesheet">
     <link rel="stylesheet" href="src/css/styles.css">
     <script src="src/js/auth.js"></script>
+    <style>
+        /* ── Modal overlay ── */
+        .auth-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .auth-modal-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .auth-modal {
+            background: linear-gradient(135deg, #0a1628 0%, #0f2040 100%);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 460px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(6, 182, 212, 0.08);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-modal h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #e8f4fd;
+        }
+
+        .auth-modal .modal-sub {
+            font-size: 14px;
+            color: #7fb3d3;
+            margin-bottom: 28px;
+        }
+
+        .auth-modal .close-btn {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            background: none;
+            border: none;
+            color: #7fb3d3;
+            font-size: 26px;
+            cursor: pointer;
+            line-height: 1;
+            padding: 4px;
+        }
+
+        .auth-modal {
+            position: relative;
+        }
+
+        .modal-form-group {
+            margin-bottom: 18px;
+        }
+
+        .modal-form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #7fb3d3;
+            margin-bottom: 7px;
+        }
+
+        .modal-form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(6, 182, 212, 0.06);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            border-radius: 12px;
+            color: #e8f4fd;
+            font-family: inherit;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .modal-form-group input:focus {
+            border-color: rgba(6, 182, 212, 0.55);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.1);
+        }
+
+        .modal-form-group input::placeholder {
+            color: #4a7a9b;
+        }
+
+        .modal-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .modal-submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #06b6d4, #6366f1);
+            color: white;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s;
+            margin-top: 8px;
+        }
+
+        .modal-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(6, 182, 212, 0.35);
+        }
+
+        .modal-submit-btn:disabled {
+            opacity: 0.6;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        .modal-error {
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            border-radius: 10px;
+            padding: 10px 14px;
+            color: #f43f5e;
+            font-size: 13px;
+            margin-bottom: 16px;
+            display: none;
+        }
+
+        .modal-success {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 10px;
+            padding: 16px;
+            color: #10b981;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+        }
+
+        .modal-divider {
+            text-align: center;
+            font-size: 13px;
+            color: #4a7a9b;
+            margin-top: 18px;
+        }
+
+        .modal-divider a {
+            color: #06b6d4;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .modal-divider a:hover {
+            text-decoration: underline;
+        }
+
+        /* Reset code display */
+        .reset-code-box {
+            background: rgba(6, 182, 212, 0.08);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin: 18px 0;
+        }
+
+        .reset-code-box .code {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: 6px;
+            color: #06b6d4;
+        }
+
+        .reset-code-box p {
+            font-size: 12px;
+            color: #7fb3d3;
+            margin-top: 6px;
+        }
+
+        /* Password strength */
+        .strength-bar {
+            height: 4px;
+            border-radius: 2px;
+            margin-top: 6px;
+            transition: all 0.3s;
+            background: #0f2040;
+        }
+
+        .strength-bar .fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+            width: 0%;
+        }
+
+        .strength-label {
+            font-size: 11px;
+            margin-top: 4px;
+        }
+    </style>
 </head>
 
 <body class="login-page">
@@ -26,16 +258,16 @@
                     <circle cx="200" cy="250" r="15" fill="url(#gradient3)" />
                     <defs>
                         <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+                            <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
                         </linearGradient>
                         <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#14b8a6;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#10b981;stop-opacity:1" />
+                            <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
                         </linearGradient>
                         <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#0ea5e9;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+                            <stop offset="0%" style="stop-color:#06b6d4;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#6366f1;stop-opacity:1" />
                         </linearGradient>
                     </defs>
                 </svg>
@@ -66,83 +298,306 @@
                         <label class="checkbox-label">
                             <input type="checkbox" id="remember"> Remember me
                         </label>
-                        <a href="#" class="link">Forgot password?</a>
+                        <a href="#" class="link" id="forgotPasswordLink">Forgot password?</a>
                     </div>
 
                     <button type="submit" class="btn btn-primary btn-full">Sign In</button>
 
-                    <p class="signup-link">Don't have an account? <a href="#" class="link">Sign up</a></p>
+                    <p class="signup-link">Don't have an account? <a href="#" class="link" id="signUpLink">Sign up</a>
+                    </p>
                 </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ FORGOT PASSWORD MODAL ══════════════════════════════ -->
+    <div class="auth-modal-overlay" id="forgotPasswordModal">
+        <div class="auth-modal">
+            <button class="close-btn" onclick="closeModal('forgotPasswordModal')">×</button>
+
+            <!-- Step 1: Enter email -->
+            <div id="fp-step1">
+                <h2>🔑 Forgot Password</h2>
+                <p class="modal-sub">Enter your email address and we'll send you a reset code.</p>
+                <div class="modal-error" id="fpError"></div>
+                <div class="modal-form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="fpEmail" placeholder="you@example.com">
+                </div>
+                <button class="modal-submit-btn" onclick="submitForgotPassword()">Send Reset Code</button>
+                <p class="modal-divider">Remembered it? <a onclick="closeModal('forgotPasswordModal')">Sign in</a></p>
+            </div>
+
+            <!-- Step 2: Show code -->
+            <div id="fp-step2" style="display:none;">
+                <h2>✅ Reset Code Sent</h2>
+                <p class="modal-sub">Your password reset code has been generated. In a real app this would be sent to
+                    your email.</p>
+                <div class="reset-code-box">
+                    <div class="code" id="fpResetCode">——</div>
+                    <p>Use this code to reset your password. Valid for 15 minutes.</p>
+                </div>
+                <button class="modal-submit-btn" onclick="showResetPasswordStep()">Enter New Password →</button>
+            </div>
+
+            <!-- Step 3: New password -->
+            <div id="fp-step3" style="display:none;">
+                <h2>🔐 Set New Password</h2>
+                <p class="modal-sub">Enter the code and your new password below.</p>
+                <div class="modal-error" id="fpError3"></div>
+                <div class="modal-form-group">
+                    <label>Reset Code</label>
+                    <input type="text" id="fpCodeInput" placeholder="Enter the code above"
+                        style="text-transform:uppercase; letter-spacing:3px;">
+                </div>
+                <div class="modal-form-group">
+                    <label>New Password</label>
+                    <input type="password" id="fpNewPassword" placeholder="Min. 6 characters"
+                        oninput="checkStrength(this)">
+                    <div class="strength-bar">
+                        <div class="fill" id="strengthFill"></div>
+                    </div>
+                    <div class="strength-label" id="strengthLabel"></div>
+                </div>
+                <div class="modal-form-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="fpConfirmPassword" placeholder="••••••••">
+                </div>
+                <button class="modal-submit-btn" onclick="submitNewPassword()">Reset Password</button>
+            </div>
+
+            <!-- Step 4: Success -->
+            <div id="fp-step4" style="display:none; text-align:center; padding: 20px 0;">
+                <div style="font-size:56px; margin-bottom:16px;">🎉</div>
+                <h2>Password Reset!</h2>
+                <p class="modal-sub">Your password has been updated successfully.</p>
+                <button class="modal-submit-btn" onclick="closeModal('forgotPasswordModal')">Back to Login</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ SIGN UP MODAL ══════════════════════════════════════ -->
+    <div class="auth-modal-overlay" id="signUpModal">
+        <div class="auth-modal">
+            <button class="close-btn" onclick="closeModal('signUpModal')">×</button>
+
+            <!-- Step 1: Register form -->
+            <div id="su-step1">
+                <h2>🚀 Create Account</h2>
+                <p class="modal-sub">Start your digital wellness journey today.</p>
+                <div class="modal-error" id="suError"></div>
+                <div class="modal-row">
+                    <div class="modal-form-group">
+                        <label>First Name</label>
+                        <input type="text" id="suFirstName" placeholder="John">
+                    </div>
+                    <div class="modal-form-group">
+                        <label>Last Name</label>
+                        <input type="text" id="suLastName" placeholder="Doe">
+                    </div>
+                </div>
+                <div class="modal-form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="suEmail" placeholder="you@example.com">
+                </div>
+                <div class="modal-form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="suPhone" placeholder="+91 98765 43210">
+                </div>
+                <div class="modal-form-group">
+                    <label>Password</label>
+                    <input type="password" id="suPassword" placeholder="Min. 6 characters"
+                        oninput="checkStrength(this)">
+                    <div class="strength-bar">
+                        <div class="fill" id="suStrengthFill"></div>
+                    </div>
+                    <div class="strength-label" id="suStrengthLabel"></div>
+                </div>
+                <div class="modal-form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="suConfirmPassword" placeholder="••••••••">
+                </div>
+                <button class="modal-submit-btn" onclick="submitSignUp()">Create Account</button>
+                <p class="modal-divider">Already have an account? <a onclick="closeModal('signUpModal')">Sign in</a></p>
+            </div>
+
+            <!-- Step 2: Success -->
+            <div id="su-step2" style="display:none; text-align:center; padding: 20px 0;">
+                <div style="font-size:56px; margin-bottom:16px;">🎊</div>
+                <h2 id="suWelcomeName">Welcome!</h2>
+                <p class="modal-sub">Your account has been created. Redirecting to your dashboard...</p>
+                <div style="margin-top:16px;">
+                    <div style="height:4px; background:rgba(6,182,212,0.15); border-radius:2px; overflow:hidden;">
+                        <div id="suProgressBar"
+                            style="height:100%; background:linear-gradient(90deg,#06b6d4,#6366f1); width:0%; transition:width 2s linear; border-radius:2px;">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <script src="src/js/common.js"></script>
     <script>
-        // Login Form Handler
+        // ── Utilities ──────────────────────────────────────────
+        function openModal(id) { document.getElementById(id).classList.add('show'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+        function showError(elId, msg) {
+            const el = document.getElementById(elId);
+            el.textContent = msg; el.style.display = 'block';
+        }
+        function hideError(elId) { document.getElementById(elId).style.display = 'none'; }
+
+        function checkStrength(input) {
+            const val = input.value;
+            const fillId = input.id === 'suPassword' ? 'suStrengthFill' : 'strengthFill';
+            const labelId = input.id === 'suPassword' ? 'suStrengthLabel' : 'strengthLabel';
+            const fill = document.getElementById(fillId);
+            const label = document.getElementById(labelId);
+            if (!fill) return;
+            let score = 0;
+            if (val.length >= 6) score++;
+            if (val.length >= 10) score++;
+            if (/[A-Z]/.test(val)) score++;
+            if (/[0-9]/.test(val)) score++;
+            if (/[^A-Za-z0-9]/.test(val)) score++;
+            const levels = [
+                { w: '0%', bg: 'transparent', txt: '' },
+                { w: '25%', bg: '#f43f5e', txt: 'Weak' },
+                { w: '50%', bg: '#f59e0b', txt: 'Fair' },
+                { w: '75%', bg: '#06b6d4', txt: 'Good' },
+                { w: '100%', bg: '#10b981', txt: 'Strong' }
+            ];
+            const lvl = levels[Math.min(score, 4)];
+            fill.style.width = lvl.w;
+            fill.style.background = lvl.bg;
+            label.textContent = lvl.txt;
+            label.style.color = lvl.bg;
+        }
+
+        // ── Forgot Password ────────────────────────────────────
+        function submitForgotPassword() {
+            hideError('fpError');
+            const email = document.getElementById('fpEmail').value.trim();
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError('fpError', 'Please enter a valid email address.'); return;
+            }
+            const token = Auth.forgotPassword(email);
+            document.getElementById('fpResetCode').textContent = token;
+            document.getElementById('fp-step1').style.display = 'none';
+            document.getElementById('fp-step2').style.display = 'block';
+        }
+
+        function showResetPasswordStep() {
+            document.getElementById('fp-step2').style.display = 'none';
+            document.getElementById('fp-step3').style.display = 'block';
+        }
+
+        function submitNewPassword() {
+            hideError('fpError3');
+            const codeInput = document.getElementById('fpCodeInput').value.trim().toUpperCase();
+            const newPwd = document.getElementById('fpNewPassword').value;
+            const confirm = document.getElementById('fpConfirmPassword').value;
+            const saved = JSON.parse(localStorage.getItem('passwordReset') || '{}');
+
+            if (codeInput !== saved.token) { showError('fpError3', 'Incorrect reset code. Please try again.'); return; }
+            if (newPwd.length < 6) { showError('fpError3', 'Password must be at least 6 characters.'); return; }
+            if (newPwd !== confirm) { showError('fpError3', 'Passwords do not match.'); return; }
+            if (new Date() > new Date(saved.expiresAt)) { showError('fpError3', 'Reset code has expired. Please request a new one.'); return; }
+
+            // Update password in registered accounts
+            const accounts = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
+            const acc = accounts.find(a => a.email === saved.email);
+            if (acc) { acc.password = newPwd; localStorage.setItem('registeredAccounts', JSON.stringify(accounts)); }
+            localStorage.removeItem('passwordReset');
+
+            document.getElementById('fp-step3').style.display = 'none';
+            document.getElementById('fp-step4').style.display = 'block';
+        }
+
+        // ── Sign Up ────────────────────────────────────────────
+        function submitSignUp() {
+            hideError('suError');
+            const fn = document.getElementById('suFirstName').value.trim();
+            const ln = document.getElementById('suLastName').value.trim();
+            const em = document.getElementById('suEmail').value.trim();
+            const ph = document.getElementById('suPhone').value.trim();
+            const pwd = document.getElementById('suPassword').value;
+            const cpwd = document.getElementById('suConfirmPassword').value;
+
+            if (!fn || !ln) { showError('suError', 'Please enter your first and last name.'); return; }
+            if (!em || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { showError('suError', 'Please enter a valid email address.'); return; }
+            if (pwd.length < 6) { showError('suError', 'Password must be at least 6 characters.'); return; }
+            if (pwd !== cpwd) { showError('suError', 'Passwords do not match.'); return; }
+
+            // Check duplicate email
+            const accounts = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
+            if (accounts.find(a => a.email === em)) { showError('suError', 'An account with this email already exists.'); return; }
+
+            Auth.register(fn, ln, em, ph, pwd);
+
+            document.getElementById('suWelcomeName').textContent = `Welcome, ${fn}! 🎊`;
+            document.getElementById('su-step1').style.display = 'none';
+            document.getElementById('su-step2').style.display = 'block';
+
+            // Animate progress bar then redirect
+            setTimeout(() => { document.getElementById('suProgressBar').style.width = '100%'; }, 50);
+            setTimeout(() => { window.location.href = 'dashboard.html'; }, 2200);
+        }
+
+        // ── Login Form ─────────────────────────────────────────
         document.getElementById('loginForm').addEventListener('submit', function (e) {
             e.preventDefault();
-
             const email = document.getElementById('email');
             const password = document.getElementById('password');
-            const submitBtn = this.querySelector('button[type="submit"]');
-
-            // Clear previous errors
+            const btn = this.querySelector('button[type="submit"]');
             FormValidator.clearAllErrors(this);
 
-            let isValid = true;
+            let valid = true;
+            if (!FormValidator.validateRequired(email.value)) { FormValidator.showError(email, 'Email is required'); valid = false; }
+            else if (!FormValidator.validateEmail(email.value)) { FormValidator.showError(email, 'Please enter a valid email'); valid = false; }
+            else FormValidator.clearError(email);
 
-            // Validate email
-            if (!FormValidator.validateRequired(email.value)) {
-                FormValidator.showError(email, 'Email is required');
-                isValid = false;
-            } else if (!FormValidator.validateEmail(email.value)) {
-                FormValidator.showError(email, 'Please enter a valid email');
-                isValid = false;
-            } else {
-                FormValidator.clearError(email);
-            }
+            if (!FormValidator.validateRequired(password.value)) { FormValidator.showError(password, 'Password is required'); valid = false; }
+            else if (password.value.length < 6) { FormValidator.showError(password, 'Password must be at least 6 characters'); valid = false; }
+            else FormValidator.clearError(password);
 
-            // Validate password
-            if (!FormValidator.validateRequired(password.value)) {
-                FormValidator.showError(password, 'Password is required');
-                isValid = false;
-            } else if (password.value.length < 6) {
-                FormValidator.showError(password, 'Password must be at least 6 characters');
-                isValid = false;
-            } else {
-                FormValidator.clearError(password);
-            }
-
-            if (isValid) {
-                // Show loading
-                submitBtn.classList.add('loading');
-                submitBtn.disabled = true;
+            if (valid) {
+                btn.classList.add('loading'); btn.disabled = true;
                 Loading.show('Signing in...');
-
-                // Simulate API call
                 setTimeout(() => {
                     if (Auth.login(email.value, password.value)) {
                         showToast('Login successful! Redirecting...', 'success');
-                        setTimeout(() => {
-                            window.location.href = 'dashboard.html';
-                        }, 1000);
+                        setTimeout(() => { window.location.href = 'dashboard.html'; }, 1000);
                     } else {
                         Loading.hide();
-                        submitBtn.classList.remove('loading');
-                        submitBtn.disabled = false;
+                        btn.classList.remove('loading'); btn.disabled = false;
                         showToast('Invalid credentials. Please try again.', 'error');
                     }
-                }, 1500);
+                }, 1400);
             }
         });
 
         // Clear error on input
-        document.querySelectorAll('#loginForm input').forEach(input => {
-            input.addEventListener('input', function () {
-                if (this.classList.contains('error')) {
-                    FormValidator.clearError(this);
-                }
+        document.querySelectorAll('#loginForm input').forEach(inp => {
+            inp.addEventListener('input', function () {
+                if (this.classList.contains('error')) FormValidator.clearError(this);
+            });
+        });
+
+        // Wire up links
+        document.getElementById('forgotPasswordLink').addEventListener('click', function (e) {
+            e.preventDefault(); openModal('forgotPasswordModal');
+        });
+        document.getElementById('signUpLink').addEventListener('click', function (e) {
+            e.preventDefault(); openModal('signUpModal');
+        });
+
+        // Close on overlay click
+        document.querySelectorAll('.auth-modal-overlay').forEach(overlay => {
+            overlay.addEventListener('click', function (e) {
+                if (e.target === this) this.classList.remove('show');
             });
         });
     </script>

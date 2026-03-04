@@ -1,50 +1,108 @@
-// Simple HTTP Server for Smartphone Addiction Dashboard
-const http = require('http');
-const fs = require('fs');
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');
 
-const PORT = 3000;
+const { initDatabase } = require('./backend/config/database');
+const predictionRoutes = require('./backend/routes/predictionRoutes');
+const { errorHandler, notFoundHandler } = require('./backend/middleware/errorHandler');
+const { apiLimiter, predictionLimiter } = require('./backend/middleware/rateLimiter');
+const logger = require('./backend/utils/logger');
 
-const mimeTypes = {
-    '.html': 'text/html',
-    '.css': 'text/css',
-    '.js': 'text/javascript',
-    '.json': 'application/json',
-    '.png': 'image/png',
-    '.jpg': 'image/jpeg',
-    '.gif': 'image/gif',
-    '.svg': 'image/svg+xml',
-    '.ico': 'image/x-icon'
-};
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-const server = http.createServer((req, res) => {
-    let filePath = '.' + req.url;
-    if (filePath === './') {
-        filePath = './index.html';
-    }
+// Create logs directory if it doesn't exist
+const logsDir = path.join(__dirname, 'logs');
+if (!fs.existsSync(logsDir)) {
+    fs.mkdirSync(logsDir);
+}
 
-    const extname = String(path.extname(filePath)).toLowerCase();
-    const contentType = mimeTypes[extname] || 'application/octet-stream';
+// Security middleware
+app.use(helmet());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || '*',
+    credentials: true
+}));
 
-    fs.readFile(filePath, (error, content) => {
-        if (error) {
-            if (error.code === 'ENOENT') {
-                res.writeHead(404, { 'Content-Type': 'text/html' });
-                res.end('<h1>404 - File Not Found</h1>', 'utf-8');
-            } else {
-                res.writeHead(500);
-                res.end('Server Error: ' + error.code);
-            }
-        } else {
-            res.writeHead(200, { 'Content-Type': contentType });
-            res.end(content, 'utf-8');
-        }
+// Request logging
+app.use(morgan('combined', {
+    stream: { write: message => logger.info(message.trim()) }
+}));
+
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Rate limiting
+app.use('/api/', apiLimiter);
+
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: 'Server is running',
+        timestamp: new Date().toISOString()
     });
 });
 
-server.listen(PORT, () => {
-    console.log('\n🚀 Server is running!');
-    console.log(`\n📱 Smartphone Addiction Dashboard`);
-    console.log(`\n🌐 Open in browser: http://localhost:${PORT}`);
-    console.log(`\n✨ Press Ctrl+C to stop the server\n`);
+// API Routes
+app.use('/api/predictions', predictionLimiter, predictionRoutes);
+
+// Serve static files (frontend)
+app.use(express.static(path.join(__dirname)));
+
+// Frontend routes
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
+
+// 404 handler
+app.use(notFoundHandler);
+
+// Error handler
+app.use(errorHandler);
+
+// Initialize database and start server
+const startServer = async () => {
+    try {
+        // Initialize database tables
+        await initDatabase();
+        
+        // Start server
+        app.listen(PORT, () => {
+            logger.info(`Server started successfully on port ${PORT}`);
+            logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+            logger.info(`API available at: http://localhost:${PORT}/api`);
+            console.log(`\n🚀 Server is running on http://localhost:${PORT}`);
+            console.log(`📊 API Endpoint: http://localhost:${PORT}/api/predictions`);
+            console.log(`🏥 Health Check: http://localhost:${PORT}/api/health\n`);
+        });
+    } catch (error) {
+        logger.error('Failed to start server:', error);
+        process.exit(1);
+    }
+};
+
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+    logger.error('Unhandled Promise Rejection:', err);
+    process.exit(1);
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (err) => {
+    logger.error('Uncaught Exception:', err);
+    process.exit(1);
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+    logger.info('SIGTERM received. Shutting down gracefully...');
+    process.exit(0);
+});
+
+startServer();
