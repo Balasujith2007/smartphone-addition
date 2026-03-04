@@ -35,7 +35,11 @@ document.getElementById('predictionForm').addEventListener('submit', async funct
         const productivityHours = Math.max(0, screenTime - socialMedia - gaming);
         
         // Send to backend API
-        const response = await fetch('http://localhost:3000/api/predictions', {
+        const apiUrl = typeof API_CONFIG !== 'undefined' 
+            ? API_CONFIG.BASE_URL + API_CONFIG.ENDPOINTS.PREDICTIONS
+            : 'http://localhost:3000/api/predictions';
+        
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
