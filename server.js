@@ -24,7 +24,7 @@ if (!fs.existsSync(logsDir)) {
 // Security middleware
 app.use(helmet());
 app.use(cors({
-    origin: process.env.FRONTEND_URL || '*',
+    origin: true, // Allow all origins including 'null' for file:// protocol
     credentials: true
 }));
 
@@ -76,7 +76,7 @@ const startServer = async () => {
             logger.warn('Database initialization skipped or failed:', dbError.message);
             logger.info('Server will start without database. Some features may not work.');
         }
-        
+
         // Start server
         app.listen(PORT, () => {
             logger.info(`Server started successfully on port ${PORT}`);
@@ -95,11 +95,12 @@ const startServer = async () => {
 // Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
     logger.error('Unhandled Promise Rejection:', err);
-    process.exit(1);
 });
 
 // Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
+    console.error('*** UNCAUGHT EXCEPTION ***');
+    console.error(err);
     logger.error('Uncaught Exception:', err);
     process.exit(1);
 });

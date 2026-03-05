@@ -1,0 +1,303 @@
+/* ═══════════════════════════════════════════════════════════
+   PREMIUM SAAS DESIGN SYSTEM
+   Professional, Human-crafted, Clean Aesthetic
+   ═══════════════════════════════════════════════════════════ */
+
+:root {
+    /* ── Professional Color Palette ───────────────────────── */
+    --primary: #1976d2;
+    /* Classic Professional Blue */
+    --primary-hover: #1565c0;
+    --primary-light: #e3f2fd;
+
+    --secondary: #0288d1;
+    /* Secondary Interface Blue */
+    --secondary-hover: #0277bd;
+
+    --accent: #f59e0b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+
+    /* ── UI Backgrounds & Surfaces ───────────────────────── */
+    --bg-app: #f8fafc;
+    /* Pure clean app background */
+    --bg-surface: #ffffff;
+    /* White cards/panels */
+    --bg-muted: #f1f5f9;
+    /* Light gray for borders/dividers */
+
+    /* ── Text Hierarchy ────────────────────────────────────── */
+    --text-primary: #0f172a;
+    /* Slate 900 */
+    --text-secondary: #475569;
+    /* Slate 600 */
+    --text-tertiary: #94a3b8;
+    /* Slate 400 */
+
+    /* ── Borders & Shadows ─────────────────────────────────── */
+    --border-soft: #e2e8f0;
+    --border-hover: #cbd5e1;
+
+    /* Subtle, incredibly soft, realistic shadows - NO GLOWS */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+
+    /* Transitions */
+    --transition-fast: 0.15s ease-in-out;
+    --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Base App Reset ──────────────────────────────────────── */
+body {
+    background: var(--bg-app) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--text-primary) !important;
+    font-family: 'Outfit', 'Inter', sans-serif !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.025em;
+}
+
+/* ── Typography Overrides ────────────────────────────────── */
+p {
+    color: var(--text-secondary) !important;
+}
+
+/* ── Solid Clean Cards (Replacing Glassmorphism) ────────── */
+.glass-card,
+.stat-card,
+.chart-card,
+.alert-panel,
+.recommendations-panel,
+.auth-modal {
+    background: var(--bg-surface) !important;
+    backdrop-filter: none !important;
+    /* Pure solid colors, no AI blur */
+    border: 1px solid var(--border-soft) !important;
+    border-radius: 12px !important;
+    box-shadow: var(--shadow-sm) !important;
+    transition: box-shadow var(--transition-normal), transform var(--transition-normal) !important;
+}
+
+.glass-card:hover,
+.stat-card:hover,
+.chart-card:hover {
+    box-shadow: var(--shadow-md) !important;
+    transform: translateY(-2px) !important;
+    border-color: var(--border-hover) !important;
+}
+
+/* ── Navigation Sidebar / Top Navbar ─────────────────────── */
+.sidebar,
+.top-navbar {
+    background: var(--bg-surface) !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    border-bottom: 1px solid var(--border-soft) !important;
+    border-right: 1px solid var(--border-soft) !important;
+    box-shadow: none !important;
+}
+
+/* Update text in Navbar */
+.top-navbar h1 {
+    background: none !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+.logo {
+    color: var(--text-primary) !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.nav-item {
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+    border-radius: 8px !important;
+}
+
+.nav-item:hover {
+    background: var(--bg-muted) !important;
+    color: var(--text-primary) !important;
+    transform: none !important;
+    /* Remove bouncy transforms */
+}
+
+.nav-item.active {
+    background: var(--primary-light) !important;
+    color: var(--primary) !important;
+    box-shadow: none !important;
+    font-weight: 600 !important;
+}
+
+.nav-item.active .icon {
+    filter: none !important;
+}
+
+/* ── Buttons (Flat, Solid, Professional) ─────────────────── */
+.btn,
+button,
+.modal-submit-btn,
+.btn-primary {
+    background: var(--primary) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    padding: 10px 20px !important;
+    box-shadow: var(--shadow-sm) !important;
+    transition: background var(--transition-fast) !important;
+    transform: none !important;
+    /* Flat design */
+}
+
+.btn:hover,
+button:hover,
+.modal-submit-btn:hover,
+.btn-primary:hover {
+    background: var(--primary-hover) !important;
+    box-shadow: var(--shadow-md) !important;
+    transform: none !important;
+}
+
+.btn-secondary {
+    background: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-soft) !important;
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.btn-secondary:hover {
+    background: var(--bg-muted) !important;
+    border-color: var(--border-hover) !important;
+}
+
+/* ── Inputs and Forms ────────────────────────────────────── */
+input,
+select,
+textarea {
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border-soft) !important;
+    color: var(--text-primary) !important;
+    border-radius: 8px !important;
+    padding: 10px 14px !important;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none !important;
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 3px var(--primary-light) !important;
+    /* Standard browser focus ring */
+    background: var(--bg-surface) !important;
+}
+
+input::placeholder {
+    color: var(--text-tertiary) !important;
+}
+
+label {
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+}
+
+/* Login Container overrides */
+.login-container {
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border-soft) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.login-left {
+    background: var(--primary) !important;
+}
+
+.login-form-container h1,
+.login-form-container p {
+    color: var(--text-primary) !important;
+}
+
+.login-form-container p.subtitle {
+    color: var(--text-secondary) !important;
+}
+
+/* Dashboard Statistics & Text Colors */
+.stat-value {
+    color: var(--text-primary) !important;
+    background: none !important;
+    -webkit-text-fill-color: var(--text-primary) !important;
+}
+
+/* Risk Badges */
+.badge-warning {
+    background: var(--warning) !important;
+    color: white !important;
+    animation: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.badge-danger {
+    background: var(--danger) !important;
+    color: white !important;
+    animation: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+.badge-success {
+    background: var(--success) !important;
+    color: white !important;
+    animation: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* Notification Dropdown */
+.notification-dropdown {
+    background: var(--bg-surface) !important;
+    border: 1px solid var(--border-soft) !important;
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.notification-item h4 {
+    color: var(--text-primary) !important;
+}
+
+.notification-item p {
+    color: var(--text-secondary) !important;
+}
+
+.notification-header h3 {
+    color: var(--text-primary) !important;
+}
+
+/* Overriding SVGs and Gradients in Score */
+.score-circle text[fill="#0ea5e9"] {
+    fill: var(--primary) !important;
+}
+
+.score-circle text[fill="#64748b"] {
+    fill: var(--text-secondary) !important;
+}
+
+/* Fix generic titles */
+.card-header h2,
+h3 {
+    color: var(--text-primary) !important;
+}

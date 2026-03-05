@@ -19,46 +19,39 @@ body {
 }
 
 :root {
-    /* ── Professional "Midnight Pro" Palette ──────────────────
-       Primary  : Electric Cyan  → Indigo  (trust + innovation)
-       Secondary: Indigo         → Violet  (depth + prestige)
-       Accent   : Amber / Gold            (energy + excellence)
-       Danger   : Crimson                 (alerts)
-       Success  : Emerald                 (positive)
-    ──────────────────────────────────────────────────────── */
+    /* ── Professional "Human-Built" Palette ────────────────── */
+    --primary-gradient: #0d6efd;
+    --secondary-gradient: #0b5ed7;
+    --accent-gradient: #f59e0b;
 
-    --primary-gradient: linear-gradient(135deg, #06b6d4 0%, #6366f1 100%);
-    --secondary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-    --accent-gradient: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
-
-    --primary: #06b6d4;
-    --secondary: #6366f1;
+    --primary: #0d6efd;
+    --secondary: #6c757d;
     --accent: #f59e0b;
-    --warning: #f59e0b;
-    --danger: #f43f5e;
-    --success: #10b981;
-    --info: #06b6d4;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --success: #198754;
+    --info: #0dcaf0;
 
-    /* ── Deep Navy Backgrounds ─────────────────────────────── */
-    --bg-primary: #050d1a;
-    --bg-secondary: #0a1628;
-    --bg-tertiary: #0f2040;
-    --bg-gradient: linear-gradient(145deg, #050d1a 0%, #0a1628 50%, #0d1f38 100%);
+    /* ── Clean Light Backgrounds ─────────────────────────────── */
+    --bg-primary: #f8f9fa;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #e9ecef;
+    --bg-gradient: #f8f9fa;
 
     /* ── Text ─────────────────────────────────────────────── */
-    --text-primary: #e8f4fd;
-    --text-secondary: #7fb3d3;
-    --text-tertiary: #4a7a9b;
+    --text-primary: #212529;
+    --text-secondary: #6c757d;
+    --text-tertiary: #adb5bd;
 
-    /* ── Borders (subtle navy glow) ────────────────────────── */
-    --border-color: rgba(6, 182, 212, 0.12);
-    --border-light: rgba(6, 182, 212, 0.22);
+    /* ── Borders ────────────────────────── */
+    --border-color: #dee2e6;
+    --border-light: #e9ecef;
 
-    /* ── Shadows (navy-tinted deep) ────────────────────────── */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(6, 182, 212, 0.04);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(6, 182, 212, 0.06);
-    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.65), 0 0 20px rgba(6, 182, 212, 0.06);
-    --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 40px rgba(6, 182, 212, 0.08);
+    /* ── Shadows (soft) ────────────────────────── */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1);
 }
 
 body {

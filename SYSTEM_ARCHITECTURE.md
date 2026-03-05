@@ -1,498 +1,61 @@
-# System Architecture
+# Digital Wellness Dashboard - System Architecture
 
-## 🏗️ High-Level Architecture
+## Overview
+This application is a full-stack, production-ready system consisting of a pure modern HTML/CSS/JS frontend (no framework required to maximize rendering speed) connected to an Express.js backend and a PostgreSQL database.
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         FRONTEND                                 │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │ prediction.  │  │ dashboard.   │  │  result.     │          │
-│  │    html      │  │    html      │  │    html      │          │
-│  └──────────────┘  └──────────────┘  └──────────────┘          │
-│         │                  │                  │                  │
-│         └──────────────────┴──────────────────┘                  │
-│                            │                                     │
-│                     HTTP/HTTPS Request                           │
-└────────────────────────────┼────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      EXPRESS.JS SERVER                           │
-│  ┌──────────────────────────────────────────────────────────┐   │
-│  │                    MIDDLEWARE LAYER                       │   │
-│  │  ┌────────┐  ┌────────┐  ┌────────┐  ┌────────┐        │   │
-│  │  │ CORS   │  │Helmet  │  │ Rate   │  │ Body   │        │   │
-│  │  │        │  │Security│  │Limiter │  │ Parser │        │   │
-│  │  └────────┘  └────────┘  └────────┘  └────────┘        │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│                             │                                    │
-│  ┌──────────────────────────▼──────────────────────────────┐   │
-│  │                    ROUTES LAYER                          │   │
-│  │  ┌────────────────────────────────────────────────┐     │   │
-│  │  │  /api/health                                   │     │   │
-│  │  │  /api/predictions (POST)                       │     │   │
-│  │  │  /api/predictions/history (GET)                │     │   │
-│  │  │  /api/predictions/:id (GET)                    │     │   │
-│  │  └────────────────────────────────────────────────┘     │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│                             │                                    │
-│  ┌──────────────────────────▼──────────────────────────────┐   │
-│  │                 CONTROLLER LAYER                         │   │
-│  │  ┌────────────────────────────────────────────────┐     │   │
-│  │  │  predictionController                          │     │   │
-│  │  │  - createPrediction()                          │     │   │
-│  │  │  - getPredictionHistory()                      │     │   │
-│  │  │  - getPredictionById()                         │     │   │
-│  │  └────────────────────────────────────────────────┘     │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│                             │                                    │
-│  ┌──────────────────────────▼──────────────────────────────┐   │
-│  │                  SERVICE LAYER                           │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │   │
-│  │  │ Prediction   │  │     SMS      │  │    Email     │  │   │
-│  │  │   Service    │  │   Service    │  │   Service    │  │   │
-│  │  │              │  │              │  │              │  │   │
-│  │  │ Calculate    │  │   Twilio     │  │  Nodemailer  │  │   │
-│  │  │ Risk Score   │  │ Integration  │  │ Integration  │  │   │
-│  │  └──────────────┘  └──────────────┘  └──────────────┘  │   │
-│  │         │                  │                  │          │   │
-│  │         └──────────────────┴──────────────────┘          │   │
-│  │                            │                              │   │
-│  │  ┌─────────────────────────▼──────────────────────────┐ │   │
-│  │  │         Notification Service                       │ │   │
-│  │  │         (Orchestrates SMS + Email)                 │ │   │
-│  │  └────────────────────────────────────────────────────┘ │   │
-│  └──────────────────────────────────────────────────────────┘   │
-│                             │                                    │
-│  ┌──────────────────────────▼──────────────────────────────┐   │
-│  │                   UTILS LAYER                            │   │
-│  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │   │
-│  │  │  Validators  │  │    Logger    │  │   Database   │  │   │
-│  │  │     (Joi)    │  │  (Winston)   │  │    Config    │  │   │
-│  │  └──────────────┘  └──────────────┘  └──────────────┘  │   │
-│  └──────────────────────────────────────────────────────────┘   │
-└────────────────────────────┼────────────────────────────────────┘
-                             │
-                             ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    EXTERNAL SERVICES                             │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │  PostgreSQL  │  │    Twilio    │  │    Gmail/    │          │
-│  │   Database   │  │     SMS      │  │   SendGrid   │          │
-│  └──────────────┘  └──────────────┘  └──────────────┘          │
-└─────────────────────────────────────────────────────────────────┘
-```
+## System Components
 
-## 📊 Data Flow Diagram
-
-### Prediction Creation Flow
-
-```
-┌─────────┐
-│  User   │
-│ Submits │
-│  Form   │
-└────┬────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 1. Frontend Validation                                  │
-│    - Check required fields                              │
-│    - Validate data types                                │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 2. API Request                                          │
-│    POST /api/predictions                                │
-│    Content-Type: application/json                       │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 3. Middleware Processing                                │
-│    ├─ CORS Check                                        │
-│    ├─ Rate Limit Check                                  │
-│    ├─ Body Parsing                                      │
-│    └─ Security Headers                                  │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 4. Input Validation (Joi)                               │
-│    ├─ Email format                                      │
-│    ├─ Phone format                                      │
-│    ├─ Number ranges                                     │
-│    └─ Required fields                                   │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 5. Database Transaction START                           │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 6. User Management                                      │
-│    ├─ Check if user exists (by email)                  │
-│    ├─ Create new user OR                                │
-│    └─ Update existing user                              │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 7. Risk Calculation (PredictionService)                 │
-│    ├─ Screen Time Analysis (0-30 pts)                   │
-│    ├─ Night Usage Analysis (0-25 pts)                   │
-│    ├─ Phone Unlocks Analysis (0-20 pts)                 │
-│    ├─ Social Media Analysis (0-15 pts)                  │
-│    ├─ Productivity Balance (0-10 pts)                   │
-│    ├─ Calculate Total Score (0-100)                     │
-│    ├─ Determine Risk Level (Low/Med/High)               │
-│    ├─ Calculate Confidence (75-99%)                     │
-│    └─ Generate Recommendation                           │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 8. Save Prediction to Database                          │
-│    └─ Insert into predictions table                     │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 9. Send Notifications (Parallel)                        │
-│    ┌──────────────────┐    ┌──────────────────┐        │
-│    │  SMS Service     │    │  Email Service   │        │
-│    │  (Twilio)        │    │  (Nodemailer)    │        │
-│    │                  │    │                  │        │
-│    │ Format message   │    │ Format HTML      │        │
-│    │ Send via Twilio  │    │ Send via SMTP    │        │
-│    │ Return status    │    │ Return status    │        │
-│    └──────────────────┘    └──────────────────┘        │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 10. Save Notification Status                            │
-│     └─ Insert into notifications table                  │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 11. Database Transaction COMMIT                         │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 12. Return Response                                     │
-│     {                                                   │
-│       "success": true,                                  │
-│       "data": {                                         │
-│         "riskLevel": "High",                            │
-│         "riskScore": 90,                                │
-│         "confidence": 88,                               │
-│         "notifications": {                              │
-│           "sms": true,                                  │
-│           "email": true                                 │
-│         }                                               │
-│       }                                                 │
-│     }                                                   │
-└────┬────────────────────────────────────────────────────┘
-     │
-     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 13. Frontend Displays Result                            │
-│     - Show risk level                                   │
-│     - Show recommendations                              │
-│     - Notify user about SMS/Email                       │
-└─────────────────────────────────────────────────────────┘
-```
-
-## 🔄 Error Handling Flow
-
-```
-┌─────────────┐
-│   Error     │
-│  Occurs     │
-└──────┬──────┘
-       │
-       ▼
-┌──────────────────────────────────────┐
-│ Error Type?                          │
-├──────────────────────────────────────┤
-│                                      │
-│  ┌─────────────────────────────┐    │
-│  │ Validation Error (400)      │    │
-│  │ - Return field errors       │    │
-│  │ - User-friendly messages    │    │
-│  └─────────────────────────────┘    │
-│                                      │
-│  ┌─────────────────────────────┐    │
-│  │ Database Error (500)        │    │
-│  │ - Rollback transaction      │    │
-│  │ - Log error details         │    │
-│  │ - Return generic message    │    │
-│  └─────────────────────────────┘    │
-│                                      │
-│  ┌─────────────────────────────┐    │
-│  │ External Service Error      │    │
-│  │ - Log service failure       │    │
-│  │ - Continue with partial     │    │
-│  │ - Return success with note  │    │
-│  └─────────────────────────────┘    │
-│                                      │
-│  ┌─────────────────────────────┐    │
-│  │ Rate Limit Error (429)      │    │
-│  │ - Return retry-after        │    │
-│  │ - Log attempt               │    │
-│  └─────────────────────────────┘    │
-└──────────────────────────────────────┘
-       │
-       ▼
-┌──────────────────────────────────────┐
-│ Log to Winston                       │
-│ - Error level                        │
-│ - Stack trace                        │
-│ - Request context                    │
-│ - Timestamp                          │
-└──────────────────────────────────────┘
-       │
-       ▼
-┌──────────────────────────────────────┐
-│ Return JSON Response                 │
-│ {                                    │
-│   "success": false,                  │
-│   "message": "Error description",    │
-│   "errors": [...]                    │
-│ }                                    │
-└──────────────────────────────────────┘
-```
-
-## 🗄️ Database Schema
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                        USERS                            │
-├─────────────────────────────────────────────────────────┤
-│ id              SERIAL PRIMARY KEY                      │
-│ first_name      VARCHAR(100) NOT NULL                   │
-│ last_name       VARCHAR(100) NOT NULL                   │
-│ email           VARCHAR(255) UNIQUE NOT NULL            │
-│ phone           VARCHAR(20)                             │
-│ created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP     │
-│ updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP     │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          │ 1:N
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                     PREDICTIONS                         │
-├─────────────────────────────────────────────────────────┤
-│ id                    SERIAL PRIMARY KEY                │
-│ user_id               INTEGER FK → users(id)            │
-│ risk_level            VARCHAR(20) NOT NULL              │
-│ risk_score            INTEGER NOT NULL                  │
-│ confidence            DECIMAL(5,2) NOT NULL             │
-│ screen_time_hours     DECIMAL(5,2)                      │
-│ night_usage_hours     DECIMAL(5,2)                      │
-│ unlocks_per_day       INTEGER                           │
-│ social_media_hours    DECIMAL(5,2)                      │
-│ productivity_hours    DECIMAL(5,2)                      │
-│ recommendation        TEXT                              │
-│ created_at            TIMESTAMP DEFAULT CURRENT_TS      │
-└─────────────────────────────────────────────────────────┘
-                          │
-                          │ 1:1
-                          ▼
-┌─────────────────────────────────────────────────────────┐
-│                   NOTIFICATIONS                         │
-├─────────────────────────────────────────────────────────┤
-│ id              SERIAL PRIMARY KEY                      │
-│ prediction_id   INTEGER FK → predictions(id)            │
-│ sms_sent        BOOLEAN DEFAULT FALSE                   │
-│ email_sent      BOOLEAN DEFAULT FALSE                   │
-│ sms_status      VARCHAR(50)                             │
-│ email_status    VARCHAR(50)                             │
-│ sent_at         TIMESTAMP DEFAULT CURRENT_TIMESTAMP     │
-└─────────────────────────────────────────────────────────┘
-```
-
-## 🔐 Security Layers
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                    SECURITY LAYERS                       │
-├─────────────────────────────────────────────────────────┤
-│                                                         │
-│  Layer 1: Network Security                              │
-│  ┌───────────────────────────────────────────────┐     │
-│  │ - HTTPS/TLS encryption                        │     │
-│  │ - Firewall rules                              │     │
-│  │ - DDoS protection                             │     │
-│  └───────────────────────────────────────────────┘     │
-│                                                         │
-│  Layer 2: Application Security                          │
-│  ┌───────────────────────────────────────────────┐     │
-│  │ - Helmet (Security headers)                   │     │
-│  │ - CORS (Cross-origin control)                 │     │
-│  │ - Rate limiting                               │     │
-│  │ - Input validation (Joi)                      │     │
-│  └───────────────────────────────────────────────┘     │
-│                                                         │
-│  Layer 3: Data Security                                 │
-│  ┌───────────────────────────────────────────────┐     │
-│  │ - Parameterized queries (SQL injection)       │     │
-│  │ - Environment variables (.env)                │     │
-│  │ - No sensitive data in logs                   │     │
-│  │ - Database encryption at rest                 │     │
-│  └───────────────────────────────────────────────┘     │
-│                                                         │
-│  Layer 4: API Security                                  │
-│  ┌───────────────────────────────────────────────┐     │
-│  │ - Request validation                          │     │
-│  │ - Error message sanitization                  │     │
-│  │ - Transaction support                         │     │
-│  │ - Audit logging                               │     │
-│  └───────────────────────────────────────────────┘     │
-│                                                         │
-└─────────────────────────────────────────────────────────┘
-```
-
-## 📈 Scalability Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                   LOAD BALANCER                          │
-│                   (Nginx / AWS ELB)                      │
-└────┬────────────────────┬────────────────────┬──────────┘
-     │                    │                    │
-     ▼                    ▼                    ▼
-┌─────────┐          ┌─────────┐          ┌─────────┐
-│ Server  │          │ Server  │          │ Server  │
-│ Node 1  │          │ Node 2  │          │ Node 3  │
-└────┬────┘          └────┬────┘          └────┬────┘
-     │                    │                    │
-     └────────────────────┴────────────────────┘
-                         │
-                         ▼
-              ┌──────────────────────┐
-              │   Redis Cache        │
-              │   (Session Store)    │
-              └──────────────────────┘
-                         │
-                         ▼
-              ┌──────────────────────┐
-              │  PostgreSQL Master   │
-              │  (Read/Write)        │
-              └──────────────────────┘
-                         │
-                    ┌────┴────┐
-                    ▼         ▼
-         ┌──────────────┐  ┌──────────────┐
-         │ PostgreSQL   │  │ PostgreSQL   │
-         │ Replica 1    │  │ Replica 2    │
-         │ (Read Only)  │  │ (Read Only)  │
-         └──────────────┘  └──────────────┘
-```
-
-## 🔄 Deployment Pipeline
-
-```
-┌─────────────┐
-│ Developer   │
-│ Commits     │
-│ Code        │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│ Git Repository (GitHub)             │
-└──────┬──────────────────────────────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│ CI/CD Pipeline                      │
-│ ┌─────────────────────────────────┐ │
-│ │ 1. Run Tests                    │ │
-│ │ 2. Lint Code                    │ │
-│ │ 3. Build Application            │ │
-│ │ 4. Run Security Scan            │ │
-│ └─────────────────────────────────┘ │
-└──────┬──────────────────────────────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│ Staging Environment                 │
-│ - Test deployment                   │
-│ - Integration tests                 │
-│ - Performance tests                 │
-└──────┬──────────────────────────────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│ Manual Approval                     │
-└──────┬──────────────────────────────┘
-       │
-       ▼
-┌─────────────────────────────────────┐
-│ Production Deployment               │
-│ - Blue/Green deployment             │
-│ - Health checks                     │
-│ - Rollback capability               │
-└─────────────────────────────────────┘
-```
-
-## 📊 Monitoring Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│                   APPLICATION                            │
-│  ┌──────────────────────────────────────────────┐       │
-│  │ Winston Logger                               │       │
-│  │ - Error logs                                 │       │
-│  │ - Info logs                                  │       │
-│  │ - Debug logs                                 │       │
-│  └────────┬─────────────────────────────────────┘       │
-└───────────┼──────────────────────────────────────────────┘
-            │
-            ▼
-┌─────────────────────────────────────────────────────────┐
-│              LOG AGGREGATION                             │
-│  ┌──────────────────────────────────────────────┐       │
-│  │ Papertrail / CloudWatch / Loggly             │       │
-│  └──────────────────────────────────────────────┘       │
-└─────────────────────────────────────────────────────────┘
-            │
-            ▼
-┌─────────────────────────────────────────────────────────┐
-│              MONITORING DASHBOARD                        │
-│  ┌──────────────────────────────────────────────┐       │
-│  │ - API response times                         │       │
-│  │ - Error rates                                │       │
-│  │ - Request volume                             │       │
-│  │ - Database performance                       │       │
-│  │ - SMS/Email delivery rates                   │       │
-│  └──────────────────────────────────────────────┘       │
-└─────────────────────────────────────────────────────────┘
-            │
-            ▼
-┌─────────────────────────────────────────────────────────┐
-│              ALERTING SYSTEM                             │
-│  ┌──────────────────────────────────────────────┐       │
-│  │ - Email alerts                               │       │
-│  │ - SMS alerts                                 │       │
-│  │ - Slack notifications                        │       │
-│  │ - PagerDuty integration                      │       │
-│  └──────────────────────────────────────────────┘       │
-└─────────────────────────────────────────────────────────┘
-```
+1.  **Frontend (Vanilla JS + Theme.css)**: 
+    - Handles UI rendering, user interaction, profile management (stored locally via `UserData`), and analytics visualization.
+    - Captures smartphone usage metrics and posts them to the securely configured Node.js backend API.
+    - Utilizes a `theme.css` standard for a pure SaaS layout (no neon glows).
+2.  **Backend (Node.js + Express.js)**:
+    - Provides a robust REST API layer.
+    - Includes core middleware (Helmet, Morgan, CORS, ErrorHandling) for security and observability.
+3.  **Database (PostgreSQL)**:
+    - Stores structured schemas for:
+        - `users`: Core profile data (`email`, `phone`).
+        - `predictions`: Historical prediction data, calculated risk score, levels, etc.
+        - `notifications`: Audit logs tracking notification dispatch status.
+4.  **External Services**:
+    - **Nodemailer/SendGrid**: Dispatches HTML-formatted email reports.
+    - **Twilio**: Dispatches SMS notification alerts automatically on request.
 
 ---
 
-This architecture provides:
-- ✅ Scalability
-- ✅ Security
-- ✅ Reliability
-- ✅ Maintainability
-- ✅ Observability
+## Expected Output Flow
+
+The application executes a highly linear, fault-tolerant sequence when users submit prediction data.
+
+### 1. User Input & Validation (Frontend)
+1. The user fills out their smartphone metrics (Screen time, Unlocks, Social media hours, Gaming, Night usage) on `dashboard.html`.
+2. `prediction.js` intercepts the form submission and performs client-side validation to ensure no missing fields.
+3. The frontend retrieves the user's `email` and `phone` from local profile state (`UserData.get()`). If no phone exists, a fallback (+10000000000) is injected to explicitly bypass API schema crashes while quietly ignoring SMS dispatching later.
+4. The UI swaps into a loading state.
+
+### 2. Request Dispatch
+5. The frontend strictly executes an `await fetch('/api/predictions', { method: 'POST', body: ... })` call to the server in **online mode only**. The offline fallback has been removed for production integrity.
+
+### 3. Backend Processing (Controller)
+6. `PredictionController.js` catches the request.
+7. Validates data against `Joi` schemas (ensuring phone regex, email formats, and number bounds).
+8. A Database Transaction (`BEGIN`) is started.
+    - Queries the `users` table to create or update the user based on incoming `email`.
+    - `predictionService.js` calculates the statistical risk score off the inputs.
+    - The metric inputs and resultant risk level (e.g., "High Risk", "75/100") are securely inserted (`INSERT`) into the `predictions` table tracking to the respective `user_id`.
+
+### 4. Asynchronous Notifications
+9. While inside the transaction block, `notificationService.js` attempts to fire parallel dispatches:
+   - Evaluates `emailService.sendEmail` to the user's registered Email.
+   - Evaluates `smsService.sendSMS` to the user's registered Phone (via Twilio).
+   - *Note: In a true production environment with massive load, this would ideally move to a Redis/BullMQ queue.*
+10. The notification tracking bounds are written into the `notifications` table (storing whether the dispatch `sent = true/false`).
+
+### 5. Finalization
+11. The Database Transaction is committed (`COMMIT`).
+12. A `201 Created` generic JSON response containing the metrics, risk, and generated *Notification Delivery Toggles* returns to the frontend frontend.
+
+### 6. User Display
+13. `prediction.js` resolves the API response.
+14. It gracefully throws a success toast ("✅ Prediction generated! Email sent!").
+15. Stores the resultant values into `sessionStorage` and triggers a redirect to `result.html` to populate the frontend graphs and data visually using Chart.js.

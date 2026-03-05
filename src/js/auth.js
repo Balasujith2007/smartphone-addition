@@ -5,13 +5,50 @@ const Auth = {
 
 
     login: function (email, password) {
+        // Check if credentials match any registered account
+        const accounts = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
+        const account = accounts.find(a => a.email === email && a.password === password);
 
-        if (email && password) {
+        if (account) {
+            // Valid credentials
             localStorage.setItem('isLoggedIn', 'true');
             localStorage.setItem('userEmail', email);
             localStorage.setItem('loginTime', new Date().toISOString());
+
+            // Load user data if exists
+            const allUsers = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
+            const user = allUsers.find(u => u.email === email);
+            if (user && user.userData) {
+                localStorage.setItem('userData', JSON.stringify(user.userData));
+            }
+
             return true;
         }
+
+        // For demo/testing: Allow any email/password if no accounts exist
+        if (accounts.length === 0 && email && password.length >= 6) {
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('loginTime', new Date().toISOString());
+
+            // Create default user data
+            const names = email.split('@')[0].split('.');
+            const firstName = names[0] ? names[0].charAt(0).toUpperCase() + names[0].slice(1) : 'User';
+            const lastName = names[1] ? names[1].charAt(0).toUpperCase() + names[1].slice(1) : '';
+
+            const userData = {
+                firstName,
+                lastName,
+                email,
+                phone: '+10000000000', // Default phone fallback to pass Backend Joi validation
+                dob: '',
+                avatar: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(firstName.charAt(0) + (lastName ? lastName.charAt(0) : '')) + '&size=120&background=06b6d4&color=fff&bold=true'
+            };
+            localStorage.setItem('userData', JSON.stringify(userData));
+
+            return true;
+        }
+
         return false;
     },
 
@@ -32,21 +69,33 @@ const Auth = {
 
     register: function (firstName, lastName, email, phone, password) {
         if (!firstName || !lastName || !email || !password) return false;
-        // Save user data to localStorage
+
+        // Save user data
         const userData = {
-            firstName, lastName, email, phone,
+            firstName,
+            lastName,
+            email,
+            phone,
             dob: '',
             avatar: 'https://ui-avatars.com/api/?name=' + encodeURIComponent(firstName.charAt(0) + lastName.charAt(0)) + '&size=120&background=06b6d4&color=fff&bold=true'
         };
         localStorage.setItem('userData', JSON.stringify(userData));
-        // Save registered accounts list
+
+        // Save to registered accounts list with user data
         const accounts = JSON.parse(localStorage.getItem('registeredAccounts') || '[]');
-        accounts.push({ email, password, registeredAt: new Date().toISOString() });
+        accounts.push({
+            email,
+            password,
+            userData,
+            registeredAt: new Date().toISOString()
+        });
         localStorage.setItem('registeredAccounts', JSON.stringify(accounts));
+
         // Auto login
         localStorage.setItem('isLoggedIn', 'true');
         localStorage.setItem('userEmail', email);
         localStorage.setItem('loginTime', new Date().toISOString());
+
         return true;
     },
 
