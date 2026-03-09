@@ -3,6 +3,7 @@ services:
   - type: web
     name: smartphone-addiction-api
     env: node
+    plan: free
     buildCommand: npm install
     startCommand: npm start
     envVars:
@@ -51,3 +52,4 @@ databases:
   - name: smartphone-addiction-db
     databaseName: smartphone_addiction
     user: smartphone_user
+    plan: free
