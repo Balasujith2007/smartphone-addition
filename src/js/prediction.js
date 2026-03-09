@@ -34,9 +34,9 @@ document.getElementById('predictionForm').addEventListener('submit', async funct
         const productivityHours = Math.max(0, screenTime - socialMedia - gaming);
 
         // Define API URL strictly
-        const apiUrl = typeof API_CONFIG !== 'undefined'
+        const apiUrl = (typeof API_CONFIG !== 'undefined')
             ? API_CONFIG.BASE_URL + API_CONFIG.ENDPOINTS.PREDICTIONS
-            : 'http://localhost:3000/api/predictions';
+            : '/api/predictions'; // Fallback to relative path if config missing
 
         // Ensure we send valid phone and email (fallback to prevent backend crash)
         // Phone must match pattern: ^\+?[1-9]\d{1,14}$
@@ -191,13 +191,7 @@ document.getElementById('predictionForm').addEventListener('submit', async funct
         // Critical server failure / unreachable
         console.error('CRITICAL API ERROR:', error);
 
-        // Check if server is running
-        showToast('❌ Cannot reach backend server. Make sure server is running on port 3000.', 'error');
-
-        // Show helpful message
-        setTimeout(() => {
-            showToast('💡 Run "npm start" in terminal to start the server', 'info');
-        }, 2000);
+        showToast('❌ Cannot reach backend server. Please check your internet connection and try again.', 'error');
 
         // Reset button state
         btnText.style.display = 'inline';
