@@ -118,56 +118,51 @@ document.getElementById('predictionForm').addEventListener('submit', async funct
 
             sessionStorage.setItem('predictionResults', JSON.stringify(predictionData));
 
-            // Show exact notification status based on backend result
-            let notificationMsg = '✅ Prediction completed successfully!';
+            // Trigger Real-time Notifications (Email & SMS)
+            if (typeof NotificationService !== 'undefined') {
+                // Map risk levels to requested labels: Risk, Medium, Normal
+                const displayRisk = result.data.riskLevel === 'High' ? 'Risk' :
+                    result.data.riskLevel === 'Medium' ? 'Medium' : 'Normal';
 
-            if (result.data.notifications) {
-                const { sms, email } = result.data.notifications;
+                const notificationRiskData = {
+                    ...result.data,
+                    riskLevel: displayRisk // Override for notification display
+                };
 
-                // Save to history if any notification was intended/sent
+                await NotificationService.triggerAll(notificationRiskData);
+            } else {
+                console.warn('NotificationService not found. Falling back to local logging.');
+                // Fallback: Save to history if any notification was intended/sent
                 const history = JSON.parse(localStorage.getItem('notificationHistory') || '[]');
                 history.push({
-                    riskLevel: result.data.riskLevel,
+                    riskLevel: result.data.riskLevel === 'High' ? 'Risk' :
+                        result.data.riskLevel === 'Medium' ? 'Medium' : 'Normal',
                     riskScore: result.data.riskScore,
                     timestamp: Date.now(),
                     email: validEmail,
                     phone: validPhone
                 });
                 localStorage.setItem('notificationHistory', JSON.stringify(history));
-
-                const emails = JSON.parse(localStorage.getItem('sentEmails') || '[]');
-                emails.push({
-                    to: validEmail,
-                    subject: `Your Digital Wellness Assessment: ${result.data.riskLevel}`,
-                    body: `Hi ${validFirstName},\n\nYour recent Digital Wellness assessment indicates a ${result.data.riskLevel} with a score of ${result.data.riskScore}/100.\n\nRecommendation:\n${result.data.recommendation}\n\nStay mindful of your screen time!`
-                });
-                localStorage.setItem('sentEmails', JSON.stringify(emails));
-
-                const smsList = JSON.parse(localStorage.getItem('sentSMS') || '[]');
-                smsList.push({
-                    to: validPhone,
-                    message: `Digital Wellness: Your risk level is ${result.data.riskLevel} (Score: ${result.data.riskScore}). ${result.data.recommendation}`,
-                    timestamp: Date.now()
-                });
-                localStorage.setItem('sentSMS', JSON.stringify(smsList));
-
-                if (sms && email) {
-                    notificationMsg += ' 📧📱 Email and SMS sent!';
-                } else if (email) {
-                    notificationMsg += ' 📧 Email sent!';
-                    showToast('⚠️ SMS not sent (Twilio not configured)', 'warning');
-                } else if (sms) {
-                    notificationMsg += ' 📱 SMS sent!';
-                    showToast('⚠️ Email not sent (SMTP not configured)', 'warning');
-                } else {
-                    notificationMsg += ' ⚠️ Notifications not sent (services not configured)';
-                    setTimeout(() => {
-                        showToast('💡 See NOTIFICATION_SETUP.md to enable email/SMS', 'info');
-                    }, 2000);
-                }
             }
 
-            showToast(notificationMsg, 'success');
+            // Keep existing preview storage logic for modal previews
+            const emails = JSON.parse(localStorage.getItem('sentEmails') || '[]');
+            emails.push({
+                to: validEmail,
+                subject: `Digital Wellness Assessment: ${result.data.riskLevel} Risk`,
+                body: `Hi ${validFirstName},\n\nYour recent Digital Wellness assessment indicates a ${result.data.riskLevel} Risk with a score of ${result.data.riskScore}/100.\n\nRecommendation:\n${result.data.recommendation}\n\nStay mindful of your screen time!`
+            });
+            localStorage.setItem('sentEmails', JSON.stringify(emails));
+
+            const smsList = JSON.parse(localStorage.getItem('sentSMS') || '[]');
+            smsList.push({
+                to: validPhone,
+                message: `Digital Wellness: Your risk level is ${result.data.riskLevel} (Score: ${result.data.riskScore}). ${result.data.recommendation}`,
+                timestamp: Date.now()
+            });
+            localStorage.setItem('sentSMS', JSON.stringify(smsList));
+
+            showToast('✅ Prediction completed successfully!', 'success');
 
             // Redirect to results page after a short delay
             setTimeout(() => {
