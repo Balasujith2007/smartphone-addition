@@ -23,7 +23,7 @@ const API_CONFIG = {
 
     // 2. BACKEND API URLS
     PRODUCTION_URL: 'https://smartphone-addiction-api.onrender.com/api',
-    DEVELOPMENT_URL: 'https://smartphone-addiction-api.onrender.com/api',
+    DEVELOPMENT_URL: 'http://localhost:3000/api',
 
     // Auto-detect environment
     get BASE_URL() {

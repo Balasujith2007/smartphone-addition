@@ -60,8 +60,13 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// 404 handler
-app.use(notFoundHandler);
+// 404 handler for API routes
+app.use('/api', notFoundHandler);
+
+// Catch-all route for frontend - serve index.html for any other route
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Error handler
 app.use(errorHandler);
