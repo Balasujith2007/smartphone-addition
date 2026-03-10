@@ -60,11 +60,21 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Redirect root POST to root GET (prevents 'Cannot POST /' errors if JS fails)
+app.post('/', (req, res) => {
+    res.redirect(303, '/');
+});
+
 // 404 handler for API routes
 app.use('/api', notFoundHandler);
 
 // Catch-all route for frontend - serve index.html for any other route
+// But ignore requests that look like static files to avoid syntax errors
 app.get('*', (req, res) => {
+    // If it's a request for a static file that wasn't found, let it 404 naturally
+    if (req.path.includes('.') && !req.path.endsWith('.html')) {
+        return next();
+    }
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
