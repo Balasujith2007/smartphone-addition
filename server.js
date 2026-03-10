@@ -21,8 +21,11 @@ if (!fs.existsSync(logsDir)) {
     fs.mkdirSync(logsDir);
 }
 
-// Security middleware
-app.use(helmet());
+// Security middleware - disable CSP so inline scripts/styles work
+app.use(helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false
+}));
 app.use(cors({
     origin: true, // Allow all origins including 'null' for file:// protocol
     credentials: true
