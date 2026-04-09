@@ -4,58 +4,38 @@
    ═══════════════════════════════════════════════════════════ */
 
 :root {
-    /* ── Professional Color Palette ───────────────────────── */
-    --primary: #1976d2;
-    /* Classic Professional Blue */
-    --primary-hover: #1565c0;
-    --primary-light: #e3f2fd;
-
-    --secondary: #0288d1;
-    /* Secondary Interface Blue */
-    --secondary-hover: #0277bd;
-
+    /* ── Clean Light Color Palette ───────────────────────── */
+    --primary: #0ea5e9;      /* Sky Blue */
+    --primary-glow: rgba(14, 165, 233, 0.3);
+    --secondary: #6366f1;     /* Indigo */
     --accent: #f59e0b;
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
 
-    /* ── UI Backgrounds & Surfaces ───────────────────────── */
-    --bg-app: #f8fafc;
-    /* Pure clean app background */
-    --bg-surface: #ffffff;
-    /* White cards/panels */
-    --bg-muted: #f1f5f9;
-    /* Light gray for borders/dividers */
+    /* ── Soft Background & Light Glass Surfaces ───────────── */
+    --bg-app: linear-gradient(135deg, #f0f7ff 0%, #eef2ff 50%, #f5f3ff 100%);
+    --bg-glass: rgba(255, 255, 255, 0.75);
+    --border-glass: rgba(255, 255, 255, 0.9);
+    --border-glass-hover: rgba(14, 165, 233, 0.4);
 
     /* ── Text Hierarchy ────────────────────────────────────── */
-    --text-primary: #0f172a;
-    /* Slate 900 */
+    --text-primary: #1e293b;
     --text-secondary: #475569;
-    /* Slate 600 */
     --text-tertiary: #94a3b8;
-    /* Slate 400 */
 
-    /* ── Borders & Shadows ─────────────────────────────────── */
-    --border-soft: #e2e8f0;
-    --border-hover: #cbd5e1;
-
-    /* Subtle, incredibly soft, realistic shadows - NO GLOWS */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-
-    /* Transitions */
-    --transition-fast: 0.15s ease-in-out;
-    --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    /* ── Transitions & Effects ──────────────────────────────── */
+    --shadow-glow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    --transition-premium: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-fast: 0.2s ease;
 }
 
-/* ── Base App Reset ──────────────────────────────────────── */
+/* ── Mesh Gradient Background ────────────────────────────── */
 body {
     background: var(--bg-app) !important;
+    background-attachment: fixed !important;
     color: var(--text-primary) !important;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
-    -webkit-font-smoothing: antialiased;
+    font-family: 'Poppins', 'Inter', sans-serif !important;
 }
 
 h1,
@@ -65,7 +45,7 @@ h4,
 h5,
 h6 {
     color: var(--text-primary) !important;
-    font-family: 'Outfit', 'Inter', sans-serif !important;
+    font-family: 'Poppins', 'Outfit', sans-serif !important;
     font-weight: 600 !important;
     letter-spacing: -0.025em;
 }
@@ -75,103 +55,120 @@ p {
     color: var(--text-secondary) !important;
 }
 
-/* ── Solid Clean Cards (Replacing Glassmorphism) ────────── */
+/* ── Glassmorphism Cards with Hover Animations ────────────── */
 .glass-card,
 .stat-card,
 .chart-card,
 .alert-panel,
 .recommendations-panel,
-.auth-modal {
-    background: var(--bg-surface) !important;
-    backdrop-filter: none !important;
-    /* Pure solid colors, no AI blur */
-    border: 1px solid var(--border-soft) !important;
-    border-radius: 12px !important;
-    box-shadow: var(--shadow-sm) !important;
-    transition: box-shadow var(--transition-normal), transform var(--transition-normal) !important;
+.auth-modal,
+.profile-section,
+.profile-header-card {
+    background: var(--bg-glass) !important;
+    backdrop-filter: blur(12px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+    border: 1px solid var(--border-glass) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04) !important;
+    transition: var(--transition-premium) !important;
+    overflow: hidden !important;
 }
 
 .glass-card:hover,
 .stat-card:hover,
-.chart-card:hover {
-    box-shadow: var(--shadow-md) !important;
-    transform: translateY(-2px) !important;
-    border-color: var(--border-hover) !important;
+.chart-card:hover,
+.profile-section:hover {
+    transform: translateY(-6px) scale(1.02) !important;
+    border-color: var(--border-glass-hover) !important;
+    box-shadow: 0 12px 32px rgba(14, 165, 233, 0.12) !important;
 }
 
 /* ── Navigation Sidebar / Top Navbar ─────────────────────── */
 .sidebar,
 .top-navbar {
-    background: var(--bg-surface) !important;
-    backdrop-filter: none !important;
-    border: none !important;
-    border-bottom: 1px solid var(--border-soft) !important;
-    border-right: 1px solid var(--border-soft) !important;
-    box-shadow: none !important;
-}
-
-/* Update text in Navbar */
-.top-navbar h1 {
-    background: none !important;
-    -webkit-text-fill-color: var(--text-primary) !important;
-    color: var(--text-primary) !important;
-}
-
-.logo {
-    color: var(--text-primary) !important;
-    background: transparent !important;
-    border: none !important;
+    background: var(--bg-glass) !important;
+    backdrop-filter: blur(12px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(180%) !important;
+    border: 1px solid var(--border-glass) !important;
+    border-bottom: 2px solid var(--border-glass-hover) !important;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04) !important;
 }
 
 .nav-item {
     color: var(--text-secondary) !important;
     font-weight: 500 !important;
-    border-radius: 8px !important;
+    border-radius: 12px !important;
+    transition: var(--transition-fast) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.nav-item::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent) !important;
+    transition: 0.5s !important;
+}
+
+.nav-item:hover::before {
+    left: 100% !important;
 }
 
 .nav-item:hover {
-    background: var(--bg-muted) !important;
-    color: var(--text-primary) !important;
-    transform: none !important;
-    /* Remove bouncy transforms */
+    background: rgba(14, 165, 233, 0.08) !important;
+    color: var(--primary) !important;
+    transform: translateX(4px) !important;
 }
 
 .nav-item.active {
-    background: var(--primary-light) !important;
+    background: linear-gradient(135deg, rgba(14, 165, 233, 0.1) 0%, rgba(99, 102, 241, 0.1) 100%) !important;
     color: var(--primary) !important;
-    box-shadow: none !important;
-    font-weight: 600 !important;
+    box-shadow: 0 0 15px rgba(14, 165, 233, 0.1) !important;
+    border: 1px solid var(--border-glass-hover) !important;
 }
 
-.nav-item.active .icon {
-    filter: none !important;
-}
 
-/* ── Buttons (Flat, Solid, Professional) ─────────────────── */
+/* ── Buttons & Interactive Elements ─────────────────────── */
 .btn,
 button,
-.modal-submit-btn,
 .btn-primary {
-    background: var(--primary) !important;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%) !important;
     color: white !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-weight: 500 !important;
-    padding: 10px 20px !important;
-    box-shadow: var(--shadow-sm) !important;
-    transition: background var(--transition-fast) !important;
-    transform: none !important;
-    /* Flat design */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
 }
 
 .btn:hover,
 button:hover,
-.modal-submit-btn:hover,
 .btn-primary:hover {
-    background: var(--primary-hover) !important;
-    box-shadow: var(--shadow-md) !important;
-    transform: none !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.5) !important;
+    filter: brightness(1.1) !important;
 }
+
+.btn:active,
+button:active {
+    transform: translateY(0) scale(0.98) !important;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(6, 182, 212, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+}
+
+.btn-primary, .modal-submit-btn {
+    animation: pulseGlow 2s infinite !important;
+}
+
 
 .btn-secondary {
     background: var(--bg-surface) !important;
@@ -243,22 +240,30 @@ label {
     -webkit-text-fill-color: var(--text-primary) !important;
 }
 
-/* Risk Badges */
+/* Risk Badges & Floating Animations */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.risk-score-card, .result-header {
+    animation: float 4s ease-in-out infinite !important;
+}
+
 .badge-warning {
-    background: var(--warning) !important;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
     color: white !important;
-    animation: none !important;
-    box-shadow: none !important;
-    border: none !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3) !important;
 }
 
 .badge-danger {
-    background: var(--danger) !important;
+    background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%) !important;
     color: white !important;
-    animation: none !important;
-    box-shadow: none !important;
-    border: none !important;
+    border-radius: 20px !important;
 }
+
 
 .badge-success {
     background: var(--success) !important;
@@ -301,3 +306,137 @@ label {
 h3 {
     color: var(--text-primary) !important;
 }
+/* -- Light Theme Overrides for Components ------------------ */
+
+/* Notification Bell Gradient (Light Theme adapted) */
+.icon-btn {
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%) !important;
+    border: 1px solid rgba(14, 165, 233, 0.2) !important;
+    box-shadow: 0 2px 10px rgba(14, 165, 233, 0.1) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.icon-btn:hover {
+    background: linear-gradient(135deg, #bae6fd 0%, #7dd3fc 100%) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    border-color: rgba(14, 165, 233, 0.4) !important;
+    box-shadow: 0 4px 15px rgba(14, 165, 233, 0.2) !important;
+}
+
+.icon-btn svg {
+    stroke: #0284c7 !important;
+    margin: 0 !important;
+}
+
+/* Notification Dropdown */
+.notification-dropdown {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(14, 165, 233, 0.2) !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08) !important;
+}
+
+.notification-header {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%) !important;
+    border-bottom: 1px solid rgba(14, 165, 233, 0.1) !important;
+}
+
+.notification-header h3 {
+    color: #0f172a !important;
+}
+
+.notification-item {
+    background: rgba(248, 250, 252, 0.8) !important;
+    border: 1px solid transparent !important;
+}
+
+.notification-item:hover {
+    background: rgba(241, 245, 249, 1) !important;
+    border-color: rgba(14, 165, 233, 0.2) !important;
+}
+
+.notification-content h4 {
+    color: #1e293b !important;
+}
+
+.notification-content p {
+    color: #475569 !important;
+}
+
+.notification-time {
+    color: #64748b !important;
+}
+
+/* Card Accents */
+.stat-card:nth-child(1) { border-top: 3px solid #0ea5e9 !important; }
+.stat-card:nth-child(2) { border-top: 3px solid #6366f1 !important; }
+.stat-card:nth-child(3) { border-top: 3px solid #10b981 !important; }
+
+/* Score Animation */
+.score-circle svg circle:nth-child(2) {
+    stroke-dashoffset: 565;
+    animation: drawScoreCircle 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes drawScoreCircle {
+    to { stroke-dashoffset: 170; }
+}
+
+/* Quick Action and other text visibility fixes */
+.quick-action-btn, .tip-card {
+    background: rgba(255, 255, 255, 0.6) !important;
+    color: var(--text-primary) !important;
+}
+
+.tip-card:hover, .quick-action-btn:hover {
+    background: rgba(255, 255, 255, 0.9) !important;
+}
+
+.profile-menu {
+    background: rgba(255, 255, 255, 0.6) !important;
+    border: 1px solid rgba(14, 165, 233, 0.2) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Fix navbar titles */
+.logo, .top-navbar h1 {
+    color: var(--text-primary) !important;
+}
+
+/* Flex alignments */
+.navbar-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+}
+.top-navbar {
+    display: flex !important;
+    align-items: center !important;
+}
+
+
+/* Layout Fixes */
+.daily-goals-card {
+    grid-column: span 12 !important;
+}
+
+/* Override inline dark theme styles from JS */
+.goal-item {
+    background: rgba(255, 255, 255, 0.5) !important;
+    border: 1px solid rgba(14, 165, 233, 0.2) !important;
+}
+.goal-icon {
+    background: rgba(14, 165, 233, 0.1) !important;
+}
+.progress-bar {
+    background: rgba(14, 165, 233, 0.1) !important;
+}
+.goal-item span {
+    color: var(--text-secondary) !important;
+}
+/* Ensure risk colors in icons show up properly in light mode */
+.risk-high { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important; color: white !important; }
+.risk-medium { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; color: white !important; }
+.risk-low { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; color: white !important; }
+

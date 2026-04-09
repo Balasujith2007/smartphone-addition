@@ -286,8 +286,64 @@ function saveGoal() {
         return;
     }
     const labels = { screen_time: 'Daily Screen Time', night_usage: 'Night Usage', unlocks: 'Phone Unlocks', app_limit: 'App Limit' };
+    
+    // Save to localStorage
+    let goals = JSON.parse(localStorage.getItem('userGoals') || '{}');
+    goals[type] = { target: target, unit: unit, label: labels[type] };
+    localStorage.setItem('userGoals', JSON.stringify(goals));
+    
     showToast(`Goal set: ${labels[type]} → ${target} ${unit} ✓`, 'success');
     closeModal();
+    if(typeof renderGoals === 'function') renderGoals();
+}
+
+function renderGoals() {
+    const container = document.querySelector('.goals-list');
+    if (!container) return;
+    
+    let goals = JSON.parse(localStorage.getItem('userGoals'));
+    if (!goals || Object.keys(goals).length === 0) {
+        goals = {
+            screen_time: { target: 4, unit: 'hours', label: 'Daily Screen Time' },
+            night_usage: { target: 1, unit: 'hours', label: 'Night Usage' },
+            unlocks: { target: 80, unit: 'times', label: 'Phone Unlocks' }
+        };
+        localStorage.setItem('userGoals', JSON.stringify(goals));
+    }
+    
+    let html = '';
+    const icons = { screen_time: '✅', night_usage: '⏰', unlocks: '🔓', app_limit: '📱' };
+    const risks = { screen_time: 'low', night_usage: 'medium', unlocks: 'high', app_limit: 'low' };
+    const currents = { screen_time: 3, night_usage: 1.5, unlocks: 127, app_limit: 2 }; // Mock current values
+    
+    for (const [key, goal] of Object.entries(goals)) {
+        const icon = icons[key] || '🎯';
+        const risk = risks[key] || 'low';
+        const current = currents[key] || Number(goal.target) * 0.5; // fallback mock progress
+        let percentage = (current / goal.target) * 100;
+        if (percentage > 100) percentage = 100;
+        
+        let targetText = key === 'unlocks' || key === 'night_usage' ? `< ${goal.target} ${goal.unit}` : `${goal.target} ${goal.unit}`;
+        
+        html += `
+            <div class="goal-item">
+                <div class="goal-header">
+                    <span class="goal-icon risk-${risk}">${icon}</span>
+                    <div>
+                        <h4>${goal.label}</h4>
+                        <p>Target: ${targetText}</p>
+                    </div>
+                </div>
+                <div class="goal-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill risk-${risk}" style="width: ${percentage}%"></div>
+                    </div>
+                    <span class="progress-text">${current} / ${goal.target} ${goal.unit === 'hours'? 'h': ''}</span>
+                </div>
+            </div>
+        `;
+    }
+    container.innerHTML = html;
 }
 
 // ============================================================
@@ -562,6 +618,9 @@ window.addEventListener('DOMContentLoaded', function () {
         if (label === 'Export Data') btn.addEventListener('click', openExportDataModal);
         if (label === 'Delete Account') btn.addEventListener('click', openDeleteAccountModal);
     });
+
+    // Initial render of goals
+    if (typeof renderGoals === 'function') renderGoals();
 });
 
 // Expose for onclick attributes

@@ -7,22 +7,18 @@
     <title>Results - Digital Wellness</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="src/css/styles.css">
     <link rel="stylesheet" href="src/css/theme.css">
     <link rel="stylesheet" href="src/css/responsive.css">
-    <link rel="stylesheet" href="src/css/custom-cursor.css">
-
-    <!-- Scripts -->
+<!-- Scripts -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script src="src/js/config.js"></script>
     <script src="src/js/auth.js"></script>
     <script src="src/js/mobile-menu.js" defer></script>
-    <script src="src/js/custom-cursor.js" defer></script>
-    <script src="src/js/notifications.js" defer></script>
+<script src="src/js/notifications.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 
 <body>
@@ -234,6 +230,9 @@
                         style="background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);">
                         📬 View Sent Notifications
                     </button>
+                    <button class="btn btn-primary" onclick="downloadResultPDF()" style="background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);">
+                        📄 Download PDF
+                    </button>
                     <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">View
                         Dashboard</button>
                 </div>
@@ -242,6 +241,45 @@
     </div>
 
     <script src="src/js/common.js"></script>
+    <script>
+        function downloadResultPDF() {
+            showToast('Generating PDF...', 'info');
+            const element = document.querySelector('.results-container').cloneNode(true);
+            
+            // Remove the action buttons from the PDF clone
+            const actionBtns = element.querySelector('.action-buttons');
+            if (actionBtns) actionBtns.remove();
+            
+            // Fix text colors for PDF rendering (white text on white background issue)
+            const textElements = element.querySelectorAll('h2, h3, h4, p, span, strong');
+            textElements.forEach(el => {
+                const computed = window.getComputedStyle(el);
+                if (computed.color === 'rgb(255, 255, 255)' || computed.color.includes('245, 245, 245')) {
+                    el.style.color = '#1f2937'; // dark gray for PDF
+                }
+            });
+            
+            // Make background explicit
+            const cards = element.querySelectorAll('.glass-card');
+            cards.forEach(card => {
+                card.style.backgroundColor = '#f8fafc';
+                card.style.borderColor = '#e2e8f0';
+                card.style.color = '#1e293b';
+            });
+            
+            const opt = {
+                margin:       0.5,
+                filename:     'Digital-Wellness-Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, backgroundColor: '#ffffff' },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            
+            html2pdf().set(opt).from(element).save().then(() => {
+                showToast('PDF downloaded successfully! ✓', 'success');
+            });
+        }
+    </script>
 </body>
 
 </html>

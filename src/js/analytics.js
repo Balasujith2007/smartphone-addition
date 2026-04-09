@@ -251,3 +251,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Default period
     applyPeriod('week');
 });
+
+// ============================================================
+// Export Weekly data to CSV
+// ============================================================
+function exportWeeklyCSV() {
+    const data = periodData[activePeriod];
+    if (!data || !data.weekly) { showToast('No data available to export', 'error'); return; }
+
+    const rows = user => [
+        ['Day', 'Screen Time', 'Unlocks', 'Avg Session', 'Night Usage', 'Status'],
+        ...data.weekly.map(r => [
+            r.day, 
+            r.screenTime, 
+            r.unlocks, 
+            r.avgSession, 
+            r.night, 
+            statusLabel[r.status] || r.status
+        ])
+    ];
+
+    const csvContent = rows().map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `digital-wellness-${activePeriod}-export.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    showToast('Weekly CSV Exported Successfully! ✓', 'success');
+}
+

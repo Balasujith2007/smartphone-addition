@@ -183,3 +183,61 @@ if (markReadBtn) {
         }
     });
 }
+
+// Render Dashboard Goals
+function renderDashboardGoals() {
+    const container = document.getElementById('dashboardGoalsList');
+    if (!container) return;
+    
+    let goals = JSON.parse(localStorage.getItem('userGoals'));
+    if (!goals || Object.keys(goals).length === 0) {
+        container.innerHTML = '<p style="color:var(--text-secondary); font-size:14px;">No goals set yet. Go to your <a href="profile.html" style="color:var(--primary-color);">Profile</a> to set goals.</p>';
+        return;
+    }
+    
+    let html = '';
+    const icons = { screen_time: '✅', night_usage: '⏰', unlocks: '🔓', app_limit: '📱' };
+    const risks = { screen_time: 'low', night_usage: 'medium', unlocks: 'high', app_limit: 'low' };
+    const currents = { screen_time: 5.7, night_usage: 1.4, unlocks: 127, app_limit: 2 }; // Mock dashboard current values for demo (5h 42m, etc.)
+    
+    for (const [key, goal] of Object.entries(goals)) {
+        const icon = icons[key] || '🎯';
+        const risk = risks[key] || 'low';
+        const current = currents[key] || Number(goal.target) * 0.8; // mock 80%
+        let percentage = (current / goal.target) * 100;
+        if (percentage > 100) percentage = 100;
+        
+        // Color coding for progress bar on dashboard
+        let colorClass = percentage > 90 ? 'risk-high' : (percentage > 70 ? 'risk-medium' : 'risk-low');
+        
+        let targetText = key === 'unlocks' || key === 'night_usage' ? `< ${goal.target} ${goal.unit}` : `${goal.target} ${goal.unit}`;
+        
+        html += `
+            <div class="goal-item" style="padding: 16px; background: var(--bg-surface, rgba(255,255,255,0.6)); border-radius: 12px; border: 1px solid rgba(14,165,233,0.2); margin-bottom: 8px;">
+                <div class="goal-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <div style="display:flex; align-items:center; gap:12px;">
+                        <span class="goal-icon ${colorClass}" style="padding:10px; font-size:18px; border-radius:8px;">${icon}</span>
+                        <div>
+                            <h4 style="font-size:15px; margin:0; font-weight:600; color:var(--text-primary);">${goal.label}</h4>
+                            <span style="font-size:13px; color:var(--text-secondary);">Target: ${targetText}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="goal-progress" style="margin-top:8px;">
+                    <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+                        <span style="color:var(--text-secondary);">Current: <strong style="color:var(--text-primary);">${current} ${goal.unit==='hours'?'h':''}</strong></span>
+                        <span style="font-weight:700; color:var(--primary);">${Math.round(percentage)}%</span>
+                    </div>
+                    <div class="progress-bar" style="height:8px; background:rgba(14,165,233,0.1); border-radius:10px; overflow:hidden;">
+                        <div class="progress-fill ${colorClass}" style="height:100%; width: ${percentage}%; border-radius:10px; transition:width 1s ease;"></div>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    container.innerHTML = html;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    renderDashboardGoals();
+});

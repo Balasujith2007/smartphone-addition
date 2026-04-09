@@ -7,19 +7,16 @@
     <title>Dashboard - Digital Wellness</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="src/css/styles.css">
-    <link rel="stylesheet" href="src/css/theme.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/css/styles.css?v=4">
+    <link rel="stylesheet" href="src/css/theme.css?v=4">
     <link rel="stylesheet" href="src/css/responsive.css">
-    <link rel="stylesheet" href="src/css/custom-cursor.css">
-    <link rel="stylesheet" href="src/css/notification-theme.css">
+<link rel="stylesheet" href="src/css/notification-theme.css">
+    <link rel="stylesheet" href="src/css/profile.css">
     <script src="src/js/config.js"></script>
     <script src="src/js/auth.js"></script>
     <script src="src/js/mobile-menu.js" defer></script>
-    <script src="src/js/custom-cursor.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
@@ -137,6 +134,16 @@
                         </div>
                         <p class="score-description">Your usage patterns indicate moderate smartphone dependency.
                             Consider implementing some of our recommendations.</p>
+                    </div>
+                </div>
+                
+                <div class="daily-goals-card glass-card">
+                    <div class="card-header" style="margin-bottom: 20px;">
+                        <h2>🎯 Daily Goals Progress</h2>
+                        <a href="profile.html" style="font-size: 13px; color: var(--primary-color, #0ea5e9); text-decoration: none;">Edit Goals</a>
+                    </div>
+                    <div id="dashboardGoalsList" class="goals-list-container" style="display:flex; flex-direction:column; gap:16px;">
+                        <!-- Rendered by dashboard.js -->
                     </div>
                 </div>
 
